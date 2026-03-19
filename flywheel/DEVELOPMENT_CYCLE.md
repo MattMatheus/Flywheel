@@ -1,0 +1,55 @@
+# Development Cycle
+
+Flywheel runs a staged workflow with explicit queue movement and cycle closure.
+
+## Canonical Flow
+1. Planning creates or refines intake work.
+2. Architect processes architecture decision work when needed.
+3. PM maintains clear, ordered active queues.
+4. Engineering executes the top active implementation story.
+5. QA validates the story and decides `done` or return to `active`.
+6. Observer records the completed cycle.
+7. A single cycle commit closes the work.
+
+## Stages
+
+### Planning
+- Capture goals, constraints, and risks.
+- Create intake artifacts.
+- Recommend the next stage.
+- Do not implement production changes.
+
+### Architect
+- Execute architecture decision stories.
+- Produce decision artifacts and follow-on implementation paths.
+- Do not replace implementation work with architecture work.
+
+### Engineering
+- Execute the top active engineering story.
+- Update tests and prepare handoff.
+- Move work to QA.
+- Do not create the cycle commit yet.
+
+### QA
+- Validate acceptance criteria and regression risk.
+- File defects when required.
+- Move the story to `done` or back to `active`.
+- Run observer and close the cycle commit.
+
+### PM
+- Refine intake items.
+- Rank the active queue.
+- Keep work bounded, explicit, and testable.
+
+### Cycle
+- Alternate engineering and QA until the configured engineering active queue is empty.
+
+## Invariants
+- Required branch is set by `workflow.required_branch`.
+- Commit format is set by `workflow.cycle_commit_format`.
+- Workflow locations are resolved from `flywheel.yaml`.
+- Observer is part of cycle closure, not optional cleanup.
+- Workflow changes require synchronized updates across docs, prompts, and tools.
+
+## Empty Queue Rule
+If the configured engineering active lane is empty, the harness should report `no stories` and route work toward planning or PM refinement instead of inventing execution work.
