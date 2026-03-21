@@ -12,6 +12,7 @@ Run an operator-guided planning cycle before architecture or implementation work
 - current backlog state from configured intake and active lanes
 - current process docs from `paths.process`
 - relevant role contracts from `paths.roles` when needed
+- if `integrations.artifact_workflow.enabled` is `true`, `flywheel/tools/artifact_workflow.sh planning --format json`
 
 ## Required Actions
 1. Clarify the problem, desired outcome, constraints, and success signals.
@@ -23,6 +24,9 @@ Run an operator-guided planning cycle before architecture or implementation work
    - `architect` for decision/design work
    - `pm` for refinement and queue placement
 7. Do not implement production changes during planning.
+8. If the artifact workflow integration is enabled, review the stage entry and exit commands from `flywheel/tools/artifact_workflow.sh planning --format json` and use them when they improve artifact selection or handoff durability.
+   Example:
+   Read or select planning context from `entry` before drafting the note, then use `exit` after the note is ready to create a durable architect handoff manifest.
 
 ## Required Output
 - planning note or equivalent planning summary

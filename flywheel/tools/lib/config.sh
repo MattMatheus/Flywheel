@@ -27,6 +27,31 @@ flywheel_config_get() {
   ' "$(flywheel_config_file)" "$key"
 }
 
+flywheel_config_has() {
+  local key="$1"
+  ruby -e '
+    require "yaml"
+    path = ARGV.shift
+    key = ARGV.shift
+    data = YAML.load_file(path)
+    found = key.split(".").reduce(data) do |acc, part|
+      break :missing unless acc.is_a?(Hash) && acc.key?(part)
+      acc.fetch(part)
+    end
+    exit(found == :missing ? 1 : 0)
+  ' "$(flywheel_config_file)" "$key"
+}
+
+flywheel_config_get_optional() {
+  local key="$1"
+  local default_value="${2:-}"
+  if flywheel_config_has "$key"; then
+    flywheel_config_get "$key"
+  else
+    printf '%s\n' "$default_value"
+  fi
+}
+
 flywheel_path() {
   local key="$1"
   local root value
@@ -48,4 +73,9 @@ flywheel_artifact_name() {
   pattern="$(flywheel_config_get "artifacts.${pattern_key}")"
   pattern="${pattern//\{${token_name}\}/$token_value}"
   printf '%s' "$pattern"
+}
+
+flywheel_feature_enabled() {
+  local key="$1"
+  [[ "$(flywheel_config_get_optional "$key" "false")" == "true" ]]
 }

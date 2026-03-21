@@ -78,6 +78,12 @@
 - `api_adapter`: whether launch/observer tools include policy/API adapter behavior.
 - `role_selection`: whether prompts explicitly route through role contracts.
 
+### `integrations.artifact_workflow.*`
+- Optional artifact-tool bridge for repos that want Flywheel to surface artifact selection and manifest commands without hard-coupling the harness to that tool.
+- `enabled`: when `true`, stage launch and observer tools print artifact-tool commands relevant to that stage.
+- `command`: shell command used to invoke the artifact tool, typically a wrapper such as `/Users/.../Tools/artifacts/flywheel-artifacts`.
+- `flywheel/tools/artifact_workflow.sh` supports `--format text|json` so wrappers can consume the integration hints without parsing human-oriented stage output.
+
 ## First-Pass Constraints
 - All configured paths should be repo-relative.
 - Flywheel should not assume a product-specific top-level directory.
@@ -89,3 +95,4 @@
 - Tools should load `flywheel.yaml` before resolving any workflow paths.
 - Prompts and entry docs should reference logical artifact types, not hardcoded repo folders, unless those paths are provided by config.
 - If a feature is disabled, tools should degrade cleanly rather than require placeholder files.
+- Optional integrations should surface guidance or hooks only when explicitly enabled in config.

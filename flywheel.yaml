@@ -47,3 +47,7 @@ features:
   api_adapter: false
   role_selection: true
 
+integrations:
+  artifact_workflow:
+    enabled: false
+    command: ""

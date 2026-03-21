@@ -11,6 +11,20 @@ prompts_dir="$(flywheel_path paths.prompts)"
 eng_active_dir="$(flywheel_path paths.engineering.active)"
 arch_active_dir="$(flywheel_path paths.architecture.active)"
 
+print_artifact_workflow() {
+  local stage_name="$1"
+  local artifact_output
+
+  if ! flywheel_feature_enabled "integrations.artifact_workflow.enabled"; then
+    return 0
+  fi
+
+  artifact_output="$("$script_dir/artifact_workflow.sh" "$stage_name")"
+  if [[ -n "$artifact_output" ]]; then
+    printf '%s\n' "$artifact_output"
+  fi
+}
+
 if ! git -C "$root_dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "abort: not a git repository at $root_dir" >&2
   exit 1
@@ -54,6 +68,7 @@ checklist:
   3) recommend next stage
   4) do not implement production changes
 EOF
+    print_artifact_workflow planning
     ;;
   architect)
     top_item="$(select_top_item "$arch_active_dir" || true)"
@@ -72,6 +87,7 @@ checklist:
   3) prepare handoff
   4) move work to architecture qa
 EOF
+    print_artifact_workflow architect
     ;;
   engineering)
     top_item="$(select_top_item "$eng_active_dir" || true)"
@@ -91,6 +107,7 @@ checklist:
   4) move work to engineering qa
   5) do not commit yet
 EOF
+    print_artifact_workflow engineering
     ;;
   qa)
     cat <<EOF
@@ -103,6 +120,7 @@ checklist:
   4) run observer
   5) create the cycle commit
 EOF
+    print_artifact_workflow qa
     ;;
   pm)
     cat <<EOF
@@ -114,6 +132,7 @@ checklist:
   3) rank the active queues
   4) keep queue ordering explicit
 EOF
+    print_artifact_workflow pm
     ;;
   cycle)
     cat <<EOF
@@ -127,6 +146,7 @@ loop:
   - create one cycle commit
   - repeat
 EOF
+    print_artifact_workflow cycle
     ;;
   *)
     echo "usage: flywheel/tools/launch_stage.sh [planning|architect|engineering|qa|pm|cycle]" >&2

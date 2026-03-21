@@ -38,6 +38,7 @@ The harness does not require a product-specific repo layout. Operators should us
 - Require explicit human approval for `risky write` and `sensitive or production` actions.
 - Record approval outcome when approval-governed work occurs.
 - Keep prompts, process docs, and tool behavior synchronized when the workflow changes.
+- Treat the artifact tool as an optional integration, not required Flywheel core behavior, unless the repo explicitly enables it in config.
 
 ## Config-Owned Surfaces
 These locations are owned by `flywheel.yaml`:
@@ -57,3 +58,11 @@ These locations are owned by `flywheel.yaml`:
 4. Produce the required handoff for the stage.
 5. Run `flywheel/tools/run_observer_cycle.sh` at cycle closure.
 6. Commit using `workflow.cycle_commit_format`.
+
+If `integrations.artifact_workflow.enabled` is `true`, use the artifact-tool commands surfaced by `launch_stage.sh` and `run_observer_cycle.sh` when they help with artifact selection or durable handoff records.
+
+If you need to automate around those hints, `flywheel/tools/artifact_workflow.sh --format json` provides the same guidance in machine-readable form.
+
+When agents are running a stage, prefer telling them to consult `flywheel/tools/artifact_workflow.sh <stage> --format json` at stage entry and exit instead of relying on prose-only reminders.
+
+If the agent only needs one phase, prefer `flywheel/tools/artifact_workflow_commands.sh --stage <stage> --phase <entry|exit>` to avoid extra parsing.

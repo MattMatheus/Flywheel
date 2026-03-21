@@ -4,6 +4,7 @@
 - intake artifacts are created or updated
 - scope, constraints, assumptions, and risks are explicit
 - next-stage recommendation is explicit
+- if optional artifact workflow is enabled, a durable handoff manifest is created when useful
 
 ## Architect Exit
 - decision output is concrete and reviewable
@@ -28,3 +29,4 @@
 - observer report records validation, risks, and action/approval context
 - queue state is synchronized
 - one cycle commit is created
+- if optional artifact workflow is enabled, a cycle-closure manifest is created when useful

@@ -12,6 +12,7 @@ Execute the top architecture story from the configured architecture active lane.
 - the top story in `paths.architecture.active`
 - process docs from `paths.process`
 - role contract for architecture work when `features.role_selection` is enabled
+- if `integrations.artifact_workflow.enabled` is `true`, `flywheel/tools/artifact_workflow.sh architect --format json`
 
 ## Required Actions
 1. Restate the decision scope and non-goals.
@@ -22,6 +23,7 @@ Execute the top architecture story from the configured architecture active lane.
 6. Prepare a handoff for architecture QA or review.
 7. Move the story to the configured architecture QA lane.
 8. Run observer if the host workflow closes architecture cycles independently.
+9. If the artifact workflow integration is enabled, review the stage entry and exit commands from `flywheel/tools/artifact_workflow.sh architect --format json` and use them when they improve artifact selection or handoff durability.
 
 ## Required Output
 - updated architecture artifact paths

@@ -90,6 +90,17 @@ This keeps the harness system contained in `flywheel/` while allowing backlog st
 ### Close A Cycle
 - `./flywheel/tools/run_observer_cycle.sh --cycle-id <cycle-id>`
 
+### Optional Artifact Workflow
+Flywheel can surface artifact-tool commands without making that tool part of the harness contract.
+
+Enable `integrations.artifact_workflow.enabled` in `flywheel.yaml` and point `integrations.artifact_workflow.command` at a wrapper such as `/Users/foundry/AgenticDevelopment/Tools/artifacts/flywheel-artifacts`.
+
+When enabled:
+- `launch_stage.sh` prints stage-specific artifact selection and manifest commands
+- `run_observer_cycle.sh` prints a cycle-closure manifest command after writing the observer report
+- `artifact_workflow.sh --format json` returns the same hints in machine-readable form for wrappers or agent tooling
+- `artifact_workflow_commands.sh --stage <stage> --phase <entry|exit>` returns only the commands for one phase, which is usually the simplest interface for agents
+
 ## Core Files
 - `flywheel.yaml`
 - `flywheel/CONFIG_SCHEMA.md`

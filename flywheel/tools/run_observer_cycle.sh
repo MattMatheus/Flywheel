@@ -146,3 +146,10 @@ combined_status="$(cat "$tmp_staged" "$tmp_unstaged" "$tmp_untracked" | awk 'NF'
 } > "$out_path"
 
 printf 'wrote: %s\n' "${out_path#"$root_dir"/}"
+
+if flywheel_feature_enabled "integrations.artifact_workflow.enabled"; then
+  artifact_output="$("$script_dir/artifact_workflow.sh" observer --cycle-id "$cycle_id")"
+  if [[ -n "$artifact_output" ]]; then
+    printf '%s\n' "$artifact_output"
+  fi
+fi

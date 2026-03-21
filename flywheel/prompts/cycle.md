@@ -9,6 +9,7 @@ Drain the configured engineering active queue by alternating engineering and QA 
 - `flywheel.yaml`
 - configured engineering active, QA, and done lanes
 - engineering and QA prompts
+- if `integrations.artifact_workflow.enabled` is `true`, `flywheel/tools/artifact_workflow.sh cycle --format json`
 
 ## Required Actions
 1. Run the engineering stage.
@@ -17,6 +18,7 @@ Drain the configured engineering active queue by alternating engineering and QA 
 4. Run observer for the completed cycle.
 5. Create the cycle commit using `workflow.cycle_commit_format`.
 6. Repeat until the active engineering queue is empty.
+7. If the artifact workflow integration is enabled, review the stage entry and exit commands from `flywheel/tools/artifact_workflow.sh cycle --format json` and use them when they improve artifact selection or cycle-closure durability.
 
 ## Required Output
 - completed cycle artifacts for each processed story
@@ -27,4 +29,3 @@ Drain the configured engineering active queue by alternating engineering and QA 
 - do not bypass backlog states
 - do not commit during intermediate transitions
 - stop when the queue is empty instead of inventing more work
-

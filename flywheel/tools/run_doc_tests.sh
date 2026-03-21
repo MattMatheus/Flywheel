@@ -48,6 +48,8 @@ check_file "$(flywheel_template_path architecture_story)"
 check_file "$(flywheel_template_path observer_report)"
 
 check_file "$root_dir/flywheel/tools/launch_stage.sh"
+check_file "$root_dir/flywheel/tools/artifact_workflow.sh"
+check_file "$root_dir/flywheel/tools/artifact_workflow_commands.sh"
 check_file "$root_dir/flywheel/tools/run_observer_cycle.sh"
 check_file "$root_dir/flywheel/tools/validate_intake_items.sh"
 

@@ -11,6 +11,7 @@ Execute work through the configured Flywheel stages without relying on product-s
 3. Read `flywheel/DEVELOPMENT_CYCLE.md`.
 4. Read the stage prompt from `paths.prompts`.
 5. Read the relevant role contract from `paths.roles` when role selection is enabled.
+6. If `integrations.artifact_workflow.enabled` is `true`, read `flywheel/tools/artifact_workflow.sh <stage> --format json` for stage-specific artifact guidance.
 
 ## Stage Prompts
 Flywheel expects stage prompts for:
@@ -34,6 +35,12 @@ These should be resolved from `paths.prompts`.
 - Treat QA as a gate, not a suggestion.
 - Treat artifact readiness as explicit, not implied.
 - Record evidence, risks, and next-state recommendation in stage handoffs.
+- Treat the artifact tool as an optional integration and use it only when the repo config enables it.
+- When the artifact workflow integration is enabled, treat `flywheel/tools/artifact_workflow.sh --format json` as the canonical machine-readable source for stage entry and exit artifact guidance.
+- Interpret the JSON output consistently:
+  - `entry` commands help you discover or read the artifact inputs for the current stage.
+  - `exit` commands help you write durable handoff or cycle-closure records after the stage work is complete.
+- If you only need one phase, prefer `flywheel/tools/artifact_workflow_commands.sh --stage <stage> --phase <entry|exit>` to avoid reparsing the full JSON payload.
 - Use the smallest useful action model:
   - `read`
   - `local write`

@@ -10,3 +10,5 @@ Each stage handoff should contain:
 - next-state recommendation
 
 Handoffs should be concise and sufficient for the next stage to proceed without rediscovering context.
+
+If the optional artifact workflow integration is enabled, a stage may also emit a durable manifest that points at the handoff inputs instead of relying only on raw path references in prose.
