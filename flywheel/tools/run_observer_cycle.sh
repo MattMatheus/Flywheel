@@ -88,6 +88,7 @@ combined_status="$(cat "$tmp_staged" "$tmp_unstaged" "$tmp_untracked" | awk 'NF'
   else
     echo "- \`story_path\`:"
   fi
+  echo "- \`actor\`:"
   echo
   echo "## Diff Inventory"
   if [[ -n "$combined_status" ]]; then
@@ -99,22 +100,45 @@ combined_status="$(cat "$tmp_staged" "$tmp_unstaged" "$tmp_untracked" | awk 'NF'
     echo "- no tracked or untracked file deltas detected"
   fi
   echo
+  echo "## Objective"
+  echo "- \`intended_outcome\`:"
+  echo "- \`scope_boundary\`:"
+  echo
+  echo "## Inputs And Evidence"
+  echo "- \`artifacts_reviewed\`:"
+  echo "- \`tools_used\`:"
+  echo "- \`external_sources\`:"
+  echo
+  echo "## Changes Made"
+  echo "- \`files_changed\`:"
+  echo "- \`state_transitions\`:"
+  echo "- \`non_file_actions\`:"
+  echo
+  echo "## Validation"
+  echo "- \`checks_run\`:"
+  echo "- \`results\`:"
+  echo "- \`checks_not_run\`:"
+  echo
   echo "## Workflow Sync Checks"
   echo "- [ ] Entry docs updated if workflow behavior changed."
   echo "- [ ] Prompts updated if stage behavior changed."
   echo "- [ ] Process docs updated if contracts or gates changed."
   echo "- [ ] Queue order and state remain synchronized."
   echo
-  echo "## Handoff Summary"
-  echo "- What changed:"
-  echo "- Why it changed:"
-  echo "- Validation evidence:"
-  echo "- Open risks:"
+  echo "## Warnings And Risks"
+  echo "- \`unresolved_risks\`:"
+  echo "- \`assumptions_carried\`:"
+  echo "- \`warnings\`:"
   echo
-  echo "## State Promotions"
-  echo "- Durable decisions to promote:"
-  echo "- Reusable patterns to promote:"
-  echo "- Follow-up work to capture:"
+  echo "## Action Record"
+  echo "- \`highest_action_class\`:"
+  echo "- \`approval_required\`:"
+  echo "- \`approval_reference\`:"
+  echo
+  echo "## Next Step"
+  echo "- \`recommended_next_state\`:"
+  echo "- \`follow_up_work\`:"
+  echo "- \`durable_promotions\`:"
   echo
   echo "## Release Impact"
   echo "- Release scope:"

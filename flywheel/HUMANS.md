@@ -28,6 +28,15 @@ The harness does not require a product-specific repo layout. Operators should us
 - Do not commit during intermediate stage transitions.
 - Close each completed cycle with an observer report.
 - Use one commit per completed cycle.
+- Treat artifact readiness as explicit, not implied.
+- Record validation evidence, open risks, and next-state recommendation in handoffs.
+- Use the smallest useful action model:
+  - `read`
+  - `local write`
+  - `risky write`
+  - `sensitive or production`
+- Require explicit human approval for `risky write` and `sensitive or production` actions.
+- Record approval outcome when approval-governed work occurs.
 - Keep prompts, process docs, and tool behavior synchronized when the workflow changes.
 
 ## Config-Owned Surfaces

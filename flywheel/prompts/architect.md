@@ -16,16 +16,18 @@ Execute the top architecture story from the configured architecture active lane.
 ## Required Actions
 1. Restate the decision scope and non-goals.
 2. Update architecture artifacts needed to satisfy the story.
-3. Record tradeoffs, risks, and accepted constraints.
-4. Identify follow-on implementation work and place it in engineering intake when required.
-5. Prepare a handoff for architecture QA or review.
-6. Move the story to the configured architecture QA lane.
-7. Run observer if the host workflow closes architecture cycles independently.
+3. Record alternatives considered, tradeoffs, risks, and accepted constraints.
+4. Record operational impact and follow-up consequences when the decision changes system behavior or ownership.
+5. Identify follow-on implementation work and place it in engineering intake when required.
+6. Prepare a handoff for architecture QA or review.
+7. Move the story to the configured architecture QA lane.
+8. Run observer if the host workflow closes architecture cycles independently.
 
 ## Required Output
 - updated architecture artifact paths
 - alternatives considered
 - risks and mitigations
+- operational impact
 - follow-on implementation artifact paths
 - next-state recommendation
 
@@ -33,4 +35,3 @@ Execute the top architecture story from the configured architecture active lane.
 - do not replace implementation with architecture discussion
 - do not move architecture work directly to done
 - keep architecture output reviewable and concrete
-

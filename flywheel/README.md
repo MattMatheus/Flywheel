@@ -2,6 +2,8 @@
 
 Flywheel is a configurable workflow harness for human+agent delivery.
 
+It is optimized for explicit queue movement, reviewable markdown artifacts, and cycle closure with durable observer records.
+
 It preserves a staged operating model:
 - planning
 - architect
@@ -18,8 +20,9 @@ The harness is intended to run either:
 1. Review `flywheel.yaml`.
 2. Read `flywheel/HUMANS.md`.
 3. Read `flywheel/DEVELOPMENT_CYCLE.md`.
-4. Populate the configured prompt, role, process, template, and backlog paths.
-5. Run the harness tools from `flywheel/tools/` against the configured paths.
+4. Read the stage prompts, process docs, and templates.
+5. Populate the configured prompt, role, process, template, and backlog paths.
+6. Run the harness tools from `flywheel/tools/` against the configured paths.
 
 ## Typical Use
 
@@ -69,6 +72,12 @@ This keeps the harness system contained in `flywheel/` while allowing backlog st
 - observer reports live under `flywheel/artifacts/observer/`
 - prompts, roles, process docs, and templates stay under `flywheel/`
 - tools run from `flywheel/tools/`
+
+## Operating Expectations
+- artifact readiness is explicit, not implied
+- handoffs record evidence, risks, and next-state recommendation
+- observer reports act as compact execution traces, not just end-of-cycle notes
+- risky or sensitive actions require explicit approval and recorded outcome
 
 ### Launch A Stage
 - `./flywheel/tools/launch_stage.sh planning`

@@ -25,6 +25,12 @@
 - Architecture artifacts:
 - Risks and tradeoffs:
 
+## Alternatives Considered
+-
+
+## Operational Impact
+-
+
 ## Acceptance Criteria
 1.
 2.
@@ -33,10 +39,13 @@
 ## Review Focus
 -
 
+## Next Step
+-
+
 ## Intake Promotion Checklist
 - [ ] Decision scope is explicit and bounded.
 - [ ] Problem statement explains why the decision is needed now.
 - [ ] Inputs are listed and available.
 - [ ] Outputs are concrete and reviewable.
+- [ ] Alternatives and operational impact are explicit.
 - [ ] Follow-on implementation work is split out when needed.
-

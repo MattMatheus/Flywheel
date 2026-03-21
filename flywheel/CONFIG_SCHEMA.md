@@ -36,7 +36,7 @@
 ### `paths.artifacts.*`
 - Output locations for generated workflow artifacts.
 - `planning`: planning notes created during planning stage.
-- `observer`: observer reports created at cycle closure.
+- `observer`: observer reports created at cycle closure. These should capture objective, evidence, validation, risks, action class, approval context, and next step.
 - `release`: optional release bundle location.
 
 ### `paths.engineering.*`
@@ -61,6 +61,7 @@
   - bug
   - architecture_story
   - observer_report
+- Host repos may extend template structure, but Flywheel expects reviewable artifacts with explicit scope, evidence, risks, and next-state recommendation.
 
 ### `artifacts.*_pattern`
 - Naming patterns for generated files.
@@ -82,6 +83,7 @@
 - Flywheel should not assume a product-specific top-level directory.
 - Planning and PM remain first-class stages, but they must target configured artifact paths instead of project-specific research or roadmap directories.
 - Observer remains part of the core harness.
+- Risky or sensitive actions should be governed by host-repo approval policy layered on top of the harness docs and prompts.
 
 ## Implementation Guidance
 - Tools should load `flywheel.yaml` before resolving any workflow paths.

@@ -16,6 +16,9 @@
 - In:
 - Out:
 
+## Assumptions
+-
+
 ## Acceptance Criteria
 1.
 2.
@@ -31,6 +34,8 @@
 ## Risks
 -
 
-## Notes
+## Open Questions
 -
 
+## Next Step
+-

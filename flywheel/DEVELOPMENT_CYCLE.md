@@ -15,23 +15,27 @@ Flywheel runs a staged workflow with explicit queue movement and cycle closure.
 
 ### Planning
 - Capture goals, constraints, and risks.
+- Make assumptions explicit.
 - Create intake artifacts.
 - Recommend the next stage.
 - Do not implement production changes.
 
 ### Architect
 - Execute architecture decision stories.
-- Produce decision artifacts and follow-on implementation paths.
+- Produce decision artifacts with alternatives, tradeoffs, and operational impact.
+- Produce follow-on implementation paths.
 - Do not replace implementation work with architecture work.
 
 ### Engineering
 - Execute the top active engineering story.
 - Update tests and prepare handoff.
+- Record validation evidence, open risks, and QA focus areas.
 - Move work to QA.
 - Do not create the cycle commit yet.
 
 ### QA
 - Validate acceptance criteria and regression risk.
+- Treat missing validation evidence as a blocking quality issue.
 - File defects when required.
 - Move the story to `done` or back to `active`.
 - Run observer and close the cycle commit.
@@ -49,6 +53,8 @@ Flywheel runs a staged workflow with explicit queue movement and cycle closure.
 - Commit format is set by `workflow.cycle_commit_format`.
 - Workflow locations are resolved from `flywheel.yaml`.
 - Observer is part of cycle closure, not optional cleanup.
+- Artifact readiness must be explicit before promotion.
+- Risky or sensitive actions require explicit approval and recorded outcome.
 - Workflow changes require synchronized updates across docs, prompts, and tools.
 
 ## Empty Queue Rule

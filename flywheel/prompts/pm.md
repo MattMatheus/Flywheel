@@ -17,11 +17,12 @@ Refine backlog intake and maintain the configured active queues.
 ## Required Actions
 1. Review new intake items.
 2. Validate intake metadata and lane placement.
-3. Split or rewrite items that are too large or unclear.
+3. Split or rewrite items that are too large, unclear, or missing scope, risks, dependencies, or next-step clarity.
 4. Promote selected items into the configured active lanes in execution order.
 5. Keep queue ordering explicit in the active lane readme or queue artifact used by the host repo.
 6. Ensure stories remain bounded, testable, and traceable.
-7. Run observer if the PM cycle is being closed as a cycle.
+7. Preserve explicit dependencies and risk notes when refining intake.
+8. Run observer if the PM cycle is being closed as a cycle.
 
 ## Required Output
 - refined story or bug artifacts
@@ -33,4 +34,3 @@ Refine backlog intake and maintain the configured active queues.
 - do not implement fixes in PM mode
 - preserve lane separation between architecture and engineering work
 - do not turn PM into product strategy documentation inside the harness core
-
