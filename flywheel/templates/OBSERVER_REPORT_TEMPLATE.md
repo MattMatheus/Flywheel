@@ -7,6 +7,9 @@
 - `story_path`:
 - `actor`:
 
+## Structured Trace
+- `trace_path`:
+
 ## Diff Inventory
 - <status path>
 

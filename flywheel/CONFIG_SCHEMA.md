@@ -91,8 +91,34 @@
 - Observer remains part of the core harness.
 - Risky or sensitive actions should be governed by host-repo approval policy layered on top of the harness docs and prompts.
 
+## Stage Contracts
+- `flywheel/stage_contracts.yaml` defines machine-readable stage launch contracts.
+- Stage contracts include prompt filename, lane inputs and outputs, checklist, exit gates, and forbidden actions.
+- `flywheel/tools/launch_stage.sh` reads this file and emits either text or JSON launch context.
+
+## Examples
+- `flywheel/examples/` may contain documentation-only examples.
+- Example files must not be placed in configured backlog or artifact lanes.
+- Live backlog and artifact lanes should start blank except for lane `README.md` files.
+
+## Backlog Item Frontmatter
+- Backlog templates should include YAML frontmatter for machine-readable identity and routing.
+- Recommended fields:
+  - `kind`
+  - `id`
+  - `status`
+  - `ready`
+  - role/source fields relevant to the item type
+- Markdown metadata remains the human-readable compatibility layer until existing items are migrated.
+
 ## Implementation Guidance
 - Tools should load `flywheel.yaml` before resolving any workflow paths.
 - Prompts and entry docs should reference logical artifact types, not hardcoded repo folders, unless those paths are provided by config.
 - If a feature is disabled, tools should degrade cleanly rather than require placeholder files.
 - Optional integrations should surface guidance or hooks only when explicitly enabled in config.
+- Agent-facing tools should prefer explicit `--format json` output when their output is consumed by automation.
+- Workflow validation should check local lane directories, item metadata, status-to-lane consistency, duplicate IDs, filename families, and active queue references.
+- Shell tools should remain the stable command entrypoints, while structured parsing, validation, and state mutation logic should move into Python modules under `flywheel/tools/lib/`.
+- State mutation tools should update file location, metadata status, and transition history together.
+- Observer tools should write both a human-readable markdown report and an agent-readable JSON trace sidecar.
+- Approval-governed actions should write explicit records with `flywheel/tools/flywheel_approval.sh`.

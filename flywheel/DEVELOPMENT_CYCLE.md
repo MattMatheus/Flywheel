@@ -8,8 +8,9 @@ Flywheel runs a staged workflow with explicit queue movement and cycle closure.
 3. PM maintains clear, ordered active queues.
 4. Engineering executes the top active implementation story.
 5. QA validates the story and decides `done` or return to `active`.
-6. Observer records the completed cycle.
-7. A single cycle commit closes the work.
+6. Local workflow state is validated when queue state changed.
+7. Observer records the completed cycle as markdown plus structured JSON trace.
+8. A single cycle commit closes the work.
 
 ## Stages
 
@@ -52,12 +53,20 @@ Flywheel runs a staged workflow with explicit queue movement and cycle closure.
 - Required branch is set by `workflow.required_branch`.
 - Commit format is set by `workflow.cycle_commit_format`.
 - Workflow locations are resolved from `flywheel.yaml`.
+- Stage launch context is available in human-readable text and machine-readable JSON.
+- Stage launch behavior is sourced from `flywheel/stage_contracts.yaml`.
+- Backlog movement should use the local state tool when practical so lane placement, metadata status, and transition history are updated together.
+- Backlog state should pass `flywheel/tools/validate_workflow_state.sh` before cycle closure.
 - Observer is part of cycle closure, not optional cleanup.
 - Artifact readiness must be explicit before promotion.
 - Optional artifact-tool usage may be surfaced by config, but Flywheel core does not require that integration.
 - When the optional artifact workflow integration is enabled, agents should consult `flywheel/tools/artifact_workflow.sh <stage> --format json` for machine-readable stage entry and exit artifact guidance.
 - Risky or sensitive actions require explicit approval and recorded outcome.
+- Approval-governed work should use `flywheel/tools/flywheel_approval.sh record ...`.
 - Workflow changes require synchronized updates across docs, prompts, and tools.
 
 ## Empty Queue Rule
 If the configured engineering active lane is empty, the harness should report `no stories` and route work toward planning or PM refinement instead of inventing execution work.
+
+## Examples
+Lifecycle examples may live under `flywheel/examples/`. They are not active backlog state and should not be moved through lanes unless copied into intake as real work.

@@ -1,3 +1,14 @@
+---
+kind: bug
+id: BUG-YYYYMMDD-<slug>
+status: intake
+priority: P0 | P1 | P2 | P3
+reported_by: <role name or file>
+source_story: <path or id>
+impact_metric: <one measurable impact>
+ready: false
+---
+
 # Bug: <short title>
 
 ## Metadata
@@ -45,3 +56,15 @@
 
 ## Next Step
 -
+
+## Engineering Handoff
+- `change_summary`:
+- `validation_evidence`:
+- `qa_focus`:
+- `open_risks`:
+
+## QA Verdict
+- `verdict`:
+- `evidence_quality`:
+- `defects`:
+- `state_transition`:

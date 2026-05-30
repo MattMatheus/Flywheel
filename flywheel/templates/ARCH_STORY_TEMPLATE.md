@@ -1,3 +1,14 @@
+---
+kind: architecture_story
+id: ARCH-YYYYMMDD-<slug>
+status: intake
+owner_role: <role name or file>
+source: planning | pm | direct
+decision_owner: <role name or file>
+success_metric: <one measurable outcome>
+ready: false
+---
+
 # Architecture Story: <title>
 
 ## Metadata
@@ -49,3 +60,9 @@
 - [ ] Outputs are concrete and reviewable.
 - [ ] Alternatives and operational impact are explicit.
 - [ ] Follow-on implementation work is split out when needed.
+
+## Architecture Handoff
+- `decision_summary`:
+- `alternatives_considered`:
+- `operational_impact`:
+- `follow_on_work`:

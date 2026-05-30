@@ -24,9 +24,12 @@ Validate the top engineering story from the configured engineering QA lane.
 6. Decide the result:
    - move to `paths.engineering.done` if the quality bar is met
    - move back to `paths.engineering.active` if blocking defects exist
-7. Run observer for the completed cycle.
-8. Create the cycle commit using `workflow.cycle_commit_format`.
-9. If the artifact workflow integration is enabled, review the stage entry and exit commands from `flywheel/tools/artifact_workflow.sh qa --format json` and use them when they improve artifact selection or cycle-closure durability.
+   - prefer `flywheel/tools/flywheel_state.sh move <item> qa done` or `flywheel/tools/flywheel_state.sh move <item> qa active`
+7. Fill `## QA Verdict` before moving work to done.
+8. Run `flywheel/tools/validate_workflow_state.sh` after queue movement.
+9. Run observer for the completed cycle.
+10. Create the cycle commit using `workflow.cycle_commit_format`.
+11. If the artifact workflow integration is enabled, review the stage entry and exit commands from `flywheel/tools/artifact_workflow.sh qa --format json` and use them when they improve artifact selection or cycle-closure durability.
    Example:
    Use `entry` to confirm the stage inputs you are validating, then use `exit` after the observer step when you want a durable cycle-closure manifest.
 
@@ -36,6 +39,7 @@ Validate the top engineering story from the configured engineering QA lane.
 - evidence quality call
 - bug paths when defects are filed
 - state transition decision
+- synchronized file location, metadata status, and transition history
 
 ## Constraints
 - no silent failures

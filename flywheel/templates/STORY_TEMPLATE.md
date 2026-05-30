@@ -1,3 +1,14 @@
+---
+kind: story
+id: STORY-YYYYMMDD-<slug>
+status: intake
+owner_role: <role name or file>
+source: planning | pm | qa | direct
+success_metric: <one measurable outcome>
+release_scope: required | deferred | n/a
+ready: false
+---
+
 # Story: <title>
 
 ## Metadata
@@ -39,3 +50,15 @@
 
 ## Next Step
 -
+
+## Engineering Handoff
+- `change_summary`:
+- `validation_evidence`:
+- `qa_focus`:
+- `open_risks`:
+
+## QA Verdict
+- `verdict`:
+- `evidence_quality`:
+- `defects`:
+- `state_transition`:

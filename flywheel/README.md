@@ -87,8 +87,37 @@ This keeps the harness system contained in `flywheel/` while allowing backlog st
 - `./flywheel/tools/launch_stage.sh pm`
 - `./flywheel/tools/launch_stage.sh cycle`
 
+For agent-native launch context, add `--format json`. The JSON form returns the selected stage, prompt path, selected story when one exists, input and output lanes, checklist items, exit gates, forbidden actions, and optional artifact workflow guidance.
+
+### Validate Local Workflow State
+- `./flywheel/tools/validate_workflow_state.sh`
+- `./flywheel/tools/validate_workflow_state.sh --format json`
+
+This validates configured backlog lanes, item metadata, status-to-lane consistency, duplicate IDs, expected item filename families, and active queue references. It is broader than intake validation and is intended as the local consistency gate for agent execution.
+
+### Check Harness Health
+- `./flywheel/tools/flywheel_doctor.sh`
+- `./flywheel/tools/flywheel_doctor.sh --format json`
+
+The doctor command checks required harness files, config loading, stage contracts, and local workflow state.
+
+### Move Local Workflow State
+- `./flywheel/tools/flywheel_state.sh move <item> <from-lane> <to-lane>`
+- `./flywheel/tools/flywheel_state.sh move STORY-20260524-example active qa --reason "engineering handoff ready"`
+- `./flywheel/tools/flywheel_state.sh move ARCH-20260524-example active qa --domain architecture --format json`
+
+The state tool moves an item between configured lanes, updates its metadata status, and appends a transition history entry unless `--no-history` is passed. Use this instead of manually moving backlog files when practical.
+
+### Record Explicit Approvals
+- `./flywheel/tools/flywheel_approval.sh record --action-class risky-write --summary "<summary>" --approved-by "<name>"`
+- `./flywheel/tools/flywheel_approval.sh record --action-class sensitive-or-production --summary "<summary>" --approved-by "<name>" --scope "<scope>" --risks "<risks>"`
+
+Approval records are written under the configured observer artifact directory in `approvals/`. Use these records when work crosses from local write into risky, sensitive, or production-impacting action classes.
+
 ### Close A Cycle
 - `./flywheel/tools/run_observer_cycle.sh --cycle-id <cycle-id>`
+
+Observer closure writes both a markdown report and a structured JSON trace sidecar next to it. The markdown remains the human-readable record; the JSON sidecar is the agent-readable execution trace scaffold.
 
 ### Optional Artifact Workflow
 Flywheel can surface artifact-tool commands without making that tool part of the harness contract.
@@ -101,6 +130,9 @@ When enabled:
 - `artifact_workflow.sh --format json` returns the same hints in machine-readable form for wrappers or agent tooling
 - `artifact_workflow_commands.sh --stage <stage> --phase <entry|exit>` returns only the commands for one phase, which is usually the simplest interface for agents
 
+## Blank Harness State
+The distributed harness should start with empty live backlog and artifact lanes. Keep examples under `flywheel/examples/`, not in configured backlog or artifact directories.
+
 ## Core Files
 - `flywheel.yaml`
 - `flywheel/CONFIG_SCHEMA.md`
@@ -112,3 +144,11 @@ When enabled:
 - Keep the workflow generic.
 - Remove product-specific payload.
 - Resolve all workflow locations through config.
+
+## Tooling Direction
+- Keep shell scripts as the stable local command surface.
+- Move structured parsing, validation, and state logic into Python under `flywheel/tools/lib/`.
+- Preserve markdown and YAML as the reviewable local source of truth.
+- Prefer Python-backed tools for stage contracts, state mutation, validation, and observer trace generation.
+- Keep editable stage behavior in `flywheel/stage_contracts.yaml`.
+- Prefer YAML frontmatter in backlog items for machine-readable identity, status, kind, readiness, and routing metadata.
