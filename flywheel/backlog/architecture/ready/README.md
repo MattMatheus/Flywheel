@@ -2,3 +2,6 @@
 
 Refined architecture work can wait here before activation if the host repo uses a ready lane.
 
+## Ready Sequence
+
+No ready architecture stories.

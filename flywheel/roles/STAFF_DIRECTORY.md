@@ -32,4 +32,3 @@ Each role file follows the same structure:
 
 ## Role Boundary
 Roles refine execution quality, but the workflow contract remains defined by Flywheel prompts, process docs, and tools.
-

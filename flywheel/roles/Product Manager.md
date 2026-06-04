@@ -46,4 +46,3 @@ Shape backlog work into the smallest valuable, testable, and clearly ordered uni
 ## Constraints
 - do not implement fixes in PM mode
 - do not blur architecture and engineering lanes
-

@@ -43,4 +43,3 @@ Evaluate operational safety, reliability risk, and release readiness when those 
 ## Constraints
 - prioritize operational safety when risk is high
 - avoid introducing platform-specific policy into the core harness
-

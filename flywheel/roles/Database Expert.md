@@ -43,4 +43,3 @@ Evaluate data model, schema, storage, and retrieval implications when work touch
 ## Constraints
 - stay backend-agnostic unless the host project requires specificity
 - avoid premature complexity
-

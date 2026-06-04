@@ -43,4 +43,3 @@ Translate requirements into effective validation strategy and automation priorit
 ## Constraints
 - keep recommendations proportional to risk
 - do not use test strategy to redesign unrelated architecture
-

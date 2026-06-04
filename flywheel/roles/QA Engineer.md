@@ -45,4 +45,3 @@ Determine whether work satisfies its acceptance criteria and quality gates befor
 ## Constraints
 - no silent failures
 - no reprioritization in QA
-

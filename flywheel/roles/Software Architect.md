@@ -45,4 +45,3 @@ Define clear boundaries, decisions, and tradeoffs for architecture work.
 ## Constraints
 - avoid over-engineering
 - keep architecture work concrete enough for review and follow-on execution
-

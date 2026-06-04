@@ -11,4 +11,3 @@ These docs define the generic Flywheel workflow contract.
 - `BRANCH_AND_COMMIT_INVARIANTS.md`
 
 All workflow locations are resolved through `flywheel.yaml`.
-

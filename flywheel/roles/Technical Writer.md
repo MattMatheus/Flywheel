@@ -43,4 +43,3 @@ Keep workflow and system documentation accurate, clear, and current with actual 
 ## Constraints
 - preserve accuracy over style preference
 - do not introduce undocumented behavior changes
-
