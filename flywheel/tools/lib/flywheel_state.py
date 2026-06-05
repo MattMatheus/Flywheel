@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from flywheel_config import DOMAINS, LANES, load_config, path, rel, repo_root
+from flywheel_hooks import run_event
 
 STATUS_RE = re.compile(r"^(\s*-\s*`status`:\s*)(.*)$", re.MULTILINE)
 ID_RE = re.compile(r"^\s*-\s*`id`:\s*(.*)$", re.MULTILINE)
@@ -252,6 +253,18 @@ def move_item(args: argparse.Namespace) -> dict:
         raise RuntimeError(f"domain must be one of: {', '.join(DOMAINS)}")
 
     source = find_item(root, config, domain, args.from_lane, args.item)
+    pre_context = {
+        "command": "move",
+        "domain": domain,
+        "item": args.item,
+        "from_lane": args.from_lane,
+        "to_lane": args.to_lane,
+        "source_path": rel(root, source),
+        "actor": args.actor,
+        "reason": args.reason,
+    }
+    run_event(root, "pre_state_move", pre_context, "json", emit=False)
+
     target_dir = path(root, config, f"paths.{domain}.{args.to_lane}")
     target_dir.mkdir(parents=True, exist_ok=True)
     target = target_dir / source.name
@@ -269,7 +282,7 @@ def move_item(args: argparse.Namespace) -> dict:
     source.unlink()
     synced_readmes = sync_lane_readmes(root, config, domain, args.from_lane, args.to_lane, source.name)
 
-    return {
+    payload = {
         "state_transition": {
             "domain": domain,
             "from_lane": args.from_lane,
@@ -280,6 +293,8 @@ def move_item(args: argparse.Namespace) -> dict:
             "synced_readmes": synced_readmes,
         }
     }
+    run_event(root, "post_state_move", payload["state_transition"], "json", emit=False)
+    return payload
 
 
 def print_payload(payload: dict, output_format: str) -> None:

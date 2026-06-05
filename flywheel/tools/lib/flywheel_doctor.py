@@ -8,16 +8,30 @@ import json
 from pathlib import Path
 
 from flywheel_config import load_config, repo_root
+from flywheel_hooks import payload as hook_payload
+from flywheel_plugins import payload as plugin_payload
 from stage_context import load_stage_contracts
 from validate_workflow_state import validate
 
 REQUIRED_FILES = (
+    "fw",
     "flywheel.yaml",
     "flywheel/README.md",
     "flywheel/AGENTS.md",
     "flywheel/HUMANS.md",
     "flywheel/DEVELOPMENT_CYCLE.md",
     "flywheel/CONFIG_SCHEMA.md",
+    "docs/README.md",
+    "docs/SYSTEM_OVERVIEW.md",
+    "docs/ARCHITECTURE.md",
+    "docs/OPERATIONS.md",
+    "docs/CONFIGURATION.md",
+    "docs/PLUGINS.md",
+    "docs/HOOKS.md",
+    "docs/LANES.md",
+    "docs/EXPERIENCE.md",
+    "docs/EXPORTS.md",
+    "docs/EVOLUTION.md",
     "flywheel/stage_contracts.yaml",
     "flywheel/tools/README.md",
     "flywheel/tools/launch_stage.sh",
@@ -25,6 +39,14 @@ REQUIRED_FILES = (
     "flywheel/tools/flywheel_state.sh",
     "flywheel/tools/flywheel_approval.sh",
     "flywheel/tools/run_observer_cycle.sh",
+    "flywheel/tools/flywheel_plugins.sh",
+    "flywheel/tools/flywheel_hooks.sh",
+    "flywheel/tools/flywheel_lanes.sh",
+    "flywheel/tools/flywheel_experience.sh",
+    "flywheel/tools/flywheel_export.sh",
+    "flywheel/plugins/README.md",
+    "flywheel/hooks/README.md",
+    "flywheel/artifacts/experience/README.md",
 )
 
 
@@ -60,6 +82,20 @@ def main() -> int:
         warnings.extend(workflow.warnings)
     except Exception as exc:
         failures.append(f"workflow validation failed: {exc}")
+
+    try:
+        plugins = plugin_payload(root)["flywheel_plugins"]
+        failures.extend(f"plugin validation failed: {failure}" for failure in plugins["failures"])
+        warnings.extend(f"plugin validation warning: {warning}" for warning in plugins["warnings"])
+    except Exception as exc:
+        failures.append(f"plugin validation failed: {exc}")
+
+    try:
+        hooks = hook_payload(root)["flywheel_hooks"]
+        failures.extend(f"hook validation failed: {failure}" for failure in hooks["failures"])
+        warnings.extend(f"hook validation warning: {warning}" for warning in hooks["warnings"])
+    except Exception as exc:
+        failures.append(f"hook validation failed: {exc}")
 
     payload = {
         "flywheel_doctor": {

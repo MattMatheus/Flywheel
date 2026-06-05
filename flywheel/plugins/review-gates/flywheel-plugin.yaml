@@ -1,0 +1,12 @@
+name: review-gates
+description: Adds reusable review guidance for QA and engineering handoffs.
+version: 0.1.0
+publisher: local
+source: ""
+sha256: ""
+contributions:
+  skills: skills
+permissions:
+  shell: false
+  network: false
+  writes: []

@@ -79,6 +79,21 @@ This keeps the harness system contained in `flywheel/` while allowing backlog st
 - observer reports act as compact execution traces, not just end-of-cycle notes
 - risky or sensitive actions require explicit approval and recorded outcome
 
+## Human CLI
+
+Use `./fw` as the human-facing command router:
+
+- `./fw doctor`
+- `./fw lanes`
+- `./fw launch engineering`
+- `./fw move <item> <from-lane> <to-lane> --reason "<reason>"`
+- `./fw plugins doctor`
+- `./fw hooks doctor`
+- `./fw experience summarize`
+- `./fw export plan all`
+
+Run `./fw help` for the full command list and `./fw commands` to see the underlying tool mapping.
+
 ### Launch A Stage
 - `./flywheel/tools/launch_stage.sh planning`
 - `./flywheel/tools/launch_stage.sh architect`
@@ -95,11 +110,34 @@ For agent-native launch context, add `--format json`. The JSON form returns the 
 
 This validates configured backlog lanes, item metadata, status-to-lane consistency, duplicate IDs, expected item filename families, and active queue references. It is broader than intake validation and is intended as the local consistency gate for agent execution.
 
+### Inspect Workflow Lanes
+- `./flywheel/tools/flywheel_lanes.sh`
+- `./flywheel/tools/flywheel_lanes.sh --format json`
+
+The lane query command returns configured domains, lanes, item counts, ordering, and item metadata without mutating state. Its JSON output is the first display-ready surface for a future TUI.
+
 ### Check Harness Health
 - `./flywheel/tools/flywheel_doctor.sh`
 - `./flywheel/tools/flywheel_doctor.sh --format json`
 
-The doctor command checks required harness files, config loading, stage contracts, and local workflow state.
+The doctor command checks required harness files, config loading, stage contracts, local workflow state, and plugin manifests.
+
+### Manage Optional Plugins
+- `./flywheel/tools/flywheel_plugins.sh list`
+- `./flywheel/tools/flywheel_plugins.sh list --format json`
+- `./flywheel/tools/flywheel_plugins.sh doctor`
+- `./flywheel/tools/flywheel_plugins.sh doctor --format json`
+
+Plugins live under `plugins.path`, defaulting to `flywheel/plugins`. They should declare skills, hooks, prompts, templates, stage-contract patches, and permissions in a `flywheel-plugin.yaml` manifest instead of editing Flywheel core files directly.
+
+### Manage Optional Hooks
+- `./flywheel/tools/flywheel_hooks.sh list`
+- `./flywheel/tools/flywheel_hooks.sh list --format json`
+- `./flywheel/tools/flywheel_hooks.sh doctor`
+- `./flywheel/tools/flywheel_hooks.sh doctor --format json`
+- `./flywheel/tools/flywheel_hooks.sh run pre_state_move --context '{"item":"STORY-example"}'`
+
+Hooks live under `hooks.path`, defaulting to `flywheel/hooks`. They provide deterministic enforcement slots around workflow commands. No hooks are enabled by default.
 
 ### Move Local Workflow State
 - `./flywheel/tools/flywheel_state.sh move <item> <from-lane> <to-lane>`
@@ -118,6 +156,22 @@ Approval records are written under the configured observer artifact directory in
 - `./flywheel/tools/run_observer_cycle.sh --cycle-id <cycle-id>`
 
 Observer closure writes both a markdown report and a structured JSON trace sidecar next to it. The markdown remains the human-readable record; the JSON sidecar is the agent-readable execution trace scaffold.
+
+### Index Observer Experience
+- `./flywheel/tools/flywheel_experience.sh index`
+- `./flywheel/tools/flywheel_experience.sh index --format json`
+- `./flywheel/tools/flywheel_experience.sh summarize`
+- `./flywheel/tools/flywheel_experience.sh summarize --format json`
+
+Experience indexing reads observer JSON traces and writes derived `index.jsonl`, `stage-metrics.json`, and `lessons.md` artifacts under `experience.path`.
+
+### Plan Tool Exports
+- `./flywheel/tools/flywheel_export.sh plan cursor`
+- `./flywheel/tools/flywheel_export.sh plan codex`
+- `./flywheel/tools/flywheel_export.sh plan claude`
+- `./flywheel/tools/flywheel_export.sh plan all --format json`
+
+Export planning shows how Flywheel context would project into tool-specific files without writing them.
 
 ### Optional Artifact Workflow
 Flywheel can surface artifact-tool commands without making that tool part of the harness contract.
@@ -139,6 +193,19 @@ The distributed harness should start with empty live backlog and artifact lanes.
 - `flywheel/HUMANS.md`
 - `flywheel/AGENTS.md`
 - `flywheel/DEVELOPMENT_CYCLE.md`
+- `docs/README.md`
+
+## Reference Documentation
+- `docs/SYSTEM_OVERVIEW.md`
+- `docs/ARCHITECTURE.md`
+- `docs/OPERATIONS.md`
+- `docs/CONFIGURATION.md`
+- `docs/PLUGINS.md`
+- `docs/HOOKS.md`
+- `docs/LANES.md`
+- `docs/EXPERIENCE.md`
+- `docs/EXPORTS.md`
+- `docs/EVOLUTION.md`
 
 ## First-Pass Intent
 - Keep the workflow generic.
@@ -152,3 +219,4 @@ The distributed harness should start with empty live backlog and artifact lanes.
 - Prefer Python-backed tools for stage contracts, state mutation, validation, and observer trace generation.
 - Keep editable stage behavior in `flywheel/stage_contracts.yaml`.
 - Prefer YAML frontmatter in backlog items for machine-readable identity, status, kind, readiness, and routing metadata.
+- Treat optional plugins as declared extensions around the harness, with manifest validation before they affect workflow behavior.

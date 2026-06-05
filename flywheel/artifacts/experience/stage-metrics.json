@@ -1,0 +1,11 @@
+{
+  "trace_count": 0,
+  "warning_count": 0,
+  "total_diff_count": 0,
+  "total_validation_checks_run": 0,
+  "total_validation_checks_not_run": 0,
+  "total_risks": 0,
+  "total_follow_ups": 0,
+  "action_classes": {},
+  "recommended_next_states": {}
+}

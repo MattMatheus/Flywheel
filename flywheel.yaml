@@ -47,6 +47,21 @@ features:
   api_adapter: false
   role_selection: true
 
+plugins:
+  path: "flywheel/plugins"
+
+hooks:
+  path: "flywheel/hooks"
+  events:
+    pre_state_move: []
+    post_state_move: []
+    pre_cycle_close: []
+    post_observer: []
+    pre_commit: []
+
+experience:
+  path: "flywheel/artifacts/experience"
+
 integrations:
   artifact_workflow:
     enabled: false

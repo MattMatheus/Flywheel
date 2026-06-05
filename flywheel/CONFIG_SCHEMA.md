@@ -78,6 +78,30 @@
 - `api_adapter`: whether launch/observer tools include policy/API adapter behavior.
 - `role_selection`: whether prompts explicitly route through role contracts.
 
+### `plugins.path`
+- Directory containing optional Flywheel plugins.
+- Defaults to `flywheel/plugins` when omitted.
+- Each plugin lives in its own subdirectory and should include a `flywheel-plugin.yaml` manifest.
+- Plugin manifests declare identity, contributions, and permissions; Flywheel validates them with `flywheel/tools/flywheel_plugins.sh doctor`.
+
+### `hooks.*`
+- Optional deterministic hook configuration.
+- `hooks.path`: directory containing local hook scripts. Defaults to `flywheel/hooks` when omitted.
+- `hooks.events`: mapping of hook event names to hook command lists.
+- Supported events:
+  - `pre_state_move`
+  - `post_state_move`
+  - `pre_cycle_close`
+  - `post_observer`
+  - `pre_commit`
+- Hook entries may be command strings or mappings with `name`, `command`, and `required`.
+- Flywheel validates hook configuration with `flywheel/tools/flywheel_hooks.sh doctor`.
+
+### `experience.path`
+- Directory containing derived experience artifacts generated from observer JSON traces.
+- Defaults to `flywheel/artifacts/experience` when omitted.
+- `flywheel/tools/flywheel_experience.sh index` writes `index.jsonl`, `stage-metrics.json`, and `lessons.md` here.
+
 ### `integrations.artifact_workflow.*`
 - Optional artifact-tool bridge for repos that want Flywheel to surface artifact selection and manifest commands without hard-coupling the harness to that tool.
 - `enabled`: when `true`, stage launch and observer tools print artifact-tool commands relevant to that stage.

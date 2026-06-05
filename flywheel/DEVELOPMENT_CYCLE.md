@@ -55,6 +55,10 @@ Flywheel runs a staged workflow with explicit queue movement and cycle closure.
 - Workflow locations are resolved from `flywheel.yaml`.
 - Stage launch context is available in human-readable text and machine-readable JSON.
 - Stage launch behavior is sourced from `flywheel/stage_contracts.yaml`.
+- Optional plugin location is set by `plugins.path`, defaulting to `flywheel/plugins`.
+- Plugin manifests should pass `flywheel/tools/flywheel_plugins.sh doctor` before plugin-provided behavior is used.
+- Optional hook location is set by `hooks.path`, defaulting to `flywheel/hooks`.
+- Hook configuration should pass `flywheel/tools/flywheel_hooks.sh doctor` before hook-enforced behavior is used.
 - Backlog movement should use the local state tool when practical so lane placement, frontmatter status, metadata status, transition history, and lane README queues are updated together.
 - Backlog state should pass `flywheel/tools/validate_workflow_state.sh` before cycle closure.
 - Observer is part of cycle closure, not optional cleanup.

@@ -12,9 +12,14 @@ The harness does not require a product-specific repo layout. Operators should us
 2. Confirm the current branch matches `workflow.required_branch`.
 3. Read `flywheel/DEVELOPMENT_CYCLE.md`.
 4. Open the configured engineering active queue.
-5. Launch the required stage through `flywheel/tools/launch_stage.sh`.
-6. Use `flywheel/tools/launch_stage.sh <stage> --format json` when delegating to an agent that benefits from structured launch context.
-7. Use `flywheel/tools/flywheel_doctor.sh` when checking harness readiness.
+5. Use `./fw` for common human operations.
+6. Launch the required stage through `./fw launch <stage>`.
+7. Use `flywheel/tools/launch_stage.sh <stage> --format json` when delegating to an agent that benefits from structured launch context.
+8. Use `./fw lanes` when inspecting current lane state.
+9. Use `./fw doctor` when checking harness readiness.
+10. Use `./fw plugins doctor` when adding or changing optional plugins.
+11. Use `./fw hooks doctor` when adding or changing optional hooks.
+12. Use `docs/README.md` for comprehensive reference documentation.
 
 ## Stage Order
 - Planning: shape new work and create intake artifacts.
@@ -34,6 +39,8 @@ The harness does not require a product-specific repo layout. Operators should us
 - Treat artifact readiness as explicit, not implied.
 - Record validation evidence, open risks, and next-state recommendation in handoffs.
 - Validate local backlog state with `flywheel/tools/validate_workflow_state.sh` before cycle closure when queue state changed.
+- Refresh experience artifacts with `flywheel/tools/flywheel_experience.sh index` after observer traces change when you want aggregate lessons current.
+- Plan tool-specific context exports with `flywheel/tools/flywheel_export.sh plan all` before creating generated or copied tool files.
 - Use the smallest useful action model:
   - `read`
   - `local write`
@@ -43,7 +50,10 @@ The harness does not require a product-specific repo layout. Operators should us
 - Record approval outcome when approval-governed work occurs.
 - Record approval-governed work with `flywheel/tools/flywheel_approval.sh record ...` when practical.
 - Keep prompts, process docs, and tool behavior synchronized when the workflow changes.
+- Keep relevant files under `docs/` synchronized when the workflow changes.
 - Treat the artifact tool as an optional integration, not required Flywheel core behavior, unless the repo explicitly enables it in config.
+- Treat plugins as declared extensions; validate plugin manifests before relying on their skills, hooks, prompts, templates, or stage-contract patches.
+- Treat hooks as deterministic enforcement points; validate hook config before relying on hook behavior.
 
 ## Config-Owned Surfaces
 These locations are owned by `flywheel.yaml`:
@@ -53,6 +63,7 @@ These locations are owned by `flywheel.yaml`:
 - template directory
 - planning artifact directory
 - observer artifact directory
+- plugin directory
 - engineering lanes
 - architecture lanes
 
