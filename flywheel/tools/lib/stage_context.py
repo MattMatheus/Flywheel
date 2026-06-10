@@ -139,11 +139,16 @@ def main() -> int:
         print(f"abort: not a git repository at {root}", file=sys.stderr)
         return 1
 
+    # Launch only emits context; the hard branch gate lives on mutating
+    # commands (state moves, cycle closure) and in doctor.
     required_branch = get(config, "workflow.required_branch")
     current_branch = git_current_branch(root)
     if current_branch != required_branch:
-        print(f"abort: active branch is '{current_branch}'; expected '{required_branch}'", file=sys.stderr)
-        return 1
+        print(
+            f"warn: active branch is '{current_branch}'; expected '{required_branch}'. "
+            "State moves and cycle closure will be blocked until the branch matches.",
+            file=sys.stderr,
+        )
 
     payload = launch_payload(root, config, contracts, args.stage)
     if args.format == "json":

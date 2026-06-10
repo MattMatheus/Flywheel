@@ -1,34 +1,29 @@
 # Staff Directory
 
-This file is the canonical role index for Flywheel role selection.
+Canonical index of specialist roles for Flywheel role selection
+(`features.role_selection`).
 
-## How To Use
-1. Start here to choose the correct role for the current stage or problem.
-2. Read the selected role file before acting when `features.role_selection` is enabled.
-3. Use role guidance to improve quality and handoff clarity, not to override the workflow itself.
+## What Roles Are For
 
-## Template Schema
-Each role file follows the same structure:
-1. `Role`
-2. `Mission`
-3. `Scope`
-4. `Inputs Required`
-5. `Outputs Required`
-6. `Workflow Template`
-7. `Quality Checklist`
-8. `Handoff Template`
-9. `Constraints`
+Stage behavior — what to do in planning, architect, PM, engineering, QA, and
+cycle — is fully defined by `flywheel/stage_contracts.yaml` and the stage
+prompts. Roles do not restate it.
 
-## Core Roles
-- `Product Manager.md`
-- `Software Architect.md`
-- `QA Engineer.md`
-- `SDET.md`
-- `Technical Writer.md`
+A role file exists only when it adds domain expertise a stage prompt lacks.
+Consult one when the current work touches its domain, regardless of stage. A
+role that merely rewords a stage prompt should be deleted, not maintained.
 
-## Optional Specialist Roles
-- `SRE.md`
-- `Database Expert.md`
+## Specialist Roles
+- `SDET.md` — validation strategy, coverage design, automation priorities.
+- `SRE.md` — reliability risk, observability, operational readiness.
+- `Database Expert.md` — schema, integrity, migration, storage tradeoffs.
+- `Technical Writer.md` — documentation accuracy and stale-content cleanup.
+
+## Role File Schema
+Each role file contains: `Mission`, `Scope`, `Inputs Required`,
+`Outputs Required`, `Workflow Template`, `Quality Checklist`,
+`Handoff Template`, `Constraints`.
 
 ## Role Boundary
-Roles refine execution quality, but the workflow contract remains defined by Flywheel prompts, process docs, and tools.
+Roles refine execution quality. The workflow contract remains defined by
+`flywheel/stage_contracts.yaml`, the stage prompts, and the process docs.

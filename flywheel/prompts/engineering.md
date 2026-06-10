@@ -1,45 +1,26 @@
 # Engineering Prompt
 
-Execute the top engineering story from the configured engineering active lane.
+Implement the top story in the engineering active lane and hand it to QA.
 
-## Purpose
-- implement the requested change
-- update validation coverage
-- prepare a QA-ready handoff
+The authoritative checklist, exit gate, and forbidden actions come from
+`./fw launch engineering --format json`. This prompt adds the judgment the
+contract cannot express.
 
-## Required Inputs
-- `flywheel.yaml`
-- the top story in `paths.engineering.active`
-- process docs from `paths.process`
-- role contract for engineering work when `features.role_selection` is enabled
-- if `integrations.artifact_workflow.enabled` is `true`, `flywheel/tools/artifact_workflow.sh engineering --format json`
+## Judgment Guidance
+- Restate the story in your own words before touching code; if your restatement
+  and the acceptance criteria disagree, stop and flag it instead of guessing.
+- Implement the smallest change that satisfies the acceptance criteria. Scope
+  creep discovered mid-story becomes a new intake item, not extra diff.
+- Validation evidence means command output, not assertions. If a check cannot
+  run, record which one and why — that record is QA input, not a footnote.
+- Classify your actions (`read`, `local write`, `risky write`, `sensitive or
+  production`) and get explicit human approval before the last two.
 
-## Required Actions
-1. Read and restate the selected story.
-2. Implement the required change.
-3. Update tests for touched behavior.
-4. Run the required verification commands for the change.
-5. Classify actions using the Flywheel action model and obtain explicit human approval before `risky write` or `sensitive or production` actions.
-6. Prepare a handoff package with change summary, validation results, open risks, assumptions carried forward, and QA focus areas.
-7. Fill `## Engineering Handoff` on the story or bug.
-8. Move the story to the configured engineering QA lane, preferably with `flywheel/tools/flywheel_state.sh move <item> active qa`.
-9. Do not create the cycle commit yet.
-10. If the artifact workflow integration is enabled, review the stage entry and exit commands from `flywheel/tools/artifact_workflow.sh engineering --format json` and use them when they improve artifact selection or handoff durability.
-   Example:
-   Use `entry` to pull forward the latest ready planning context before implementation, and use `exit` only after validation and the QA handoff are complete.
+## Handoff Quality Bar
+`## Engineering Handoff` on the story must let QA proceed without re-deriving
+context: what changed, the evidence it works, the risks you did not close, and
+where QA should focus first. A handoff QA has to investigate is a failed
+handoff.
 
-## Required Output
-- changed implementation
-- updated validation coverage
-- handoff package
-- explicit QA focus areas
-- synchronized file location, metadata status, and transition history
-- action and approval notes when risky work occurred
-- new intake items for discovered gaps, when required
-
-## Constraints
-- do not fabricate work when the active queue is empty
-- do not move work directly from active to done
-- do not skip validation
-- do not perform risky or sensitive actions without explicit approval
-- keep discovered gaps separate from the current story when they are out of scope
+Move the story with `./fw move <item> active qa --reason "<summary>"`.
+Do not commit — QA closes the cycle.

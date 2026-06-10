@@ -1,7 +1,4 @@
-# Persona Template
-
-## Role
-SRE
+# Role: SRE
 
 ## Mission
 Evaluate operational safety, reliability risk, and release readiness when those concerns apply.

@@ -28,6 +28,19 @@ check_dir() {
 
 check_file "$root_dir/flywheel.yaml"
 check_file "$root_dir/fw"
+check_file "$root_dir/AGENTS.md"
+check_file "$root_dir/CLAUDE.md"
+
+if cmp -s "$root_dir/AGENTS.md" "$root_dir/CLAUDE.md"; then
+  echo "PASS: CLAUDE.md tracks AGENTS.md"
+else
+  echo "FAIL: CLAUDE.md has drifted from AGENTS.md" >&2
+  exit 1
+fi
+
+for stage_command in fw-planning fw-architect fw-pm fw-engineering fw-qa fw-cycle fw-status; do
+  check_file "$root_dir/.claude/commands/${stage_command}.md"
+done
 check_file "$root_dir/flywheel/CONFIG_SCHEMA.md"
 check_file "$root_dir/flywheel/README.md"
 check_file "$root_dir/flywheel/HUMANS.md"
@@ -66,6 +79,11 @@ check_file "$(flywheel_template_path architecture_story)"
 check_file "$(flywheel_template_path observer_report)"
 
 check_file "$root_dir/flywheel/tools/launch_stage.sh"
+check_file "$root_dir/flywheel/tools/flywheel_status.sh"
+check_file "$root_dir/flywheel/tools/close_cycle.sh"
+check_file "$root_dir/flywheel/tools/seed_demo_story.sh"
+check_file "$root_dir/flywheel/tools/lib/flywheel_status.py"
+check_file "$root_dir/flywheel/tools/lib/close_cycle.py"
 check_file "$root_dir/flywheel/tools/artifact_workflow.sh"
 check_file "$root_dir/flywheel/tools/artifact_workflow_commands.sh"
 check_file "$root_dir/flywheel/tools/flywheel_doctor.sh"
@@ -97,6 +115,7 @@ check_file "$root_dir/flywheel/tools/lib/validate_workflow_state.py"
 "$root_dir/flywheel/tools/flywheel_plugins.sh" doctor
 "$root_dir/flywheel/tools/flywheel_hooks.sh" doctor
 "$root_dir/flywheel/tools/flywheel_lanes.sh" --format json >/dev/null
+"$root_dir/flywheel/tools/flywheel_status.sh" --format json >/dev/null
 "$root_dir/flywheel/tools/flywheel_experience.sh" summarize --format json >/dev/null
 "$root_dir/flywheel/tools/flywheel_export.sh" plan all --format json >/dev/null
 "$root_dir/fw" commands >/dev/null

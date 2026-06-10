@@ -51,8 +51,8 @@ stages:
     exit_gate:
       - acceptance criteria implementation is complete
       - required validation has run or unavailable checks are recorded
-      - handoff includes validation evidence, open risks, and QA focus areas
-      - story moves to engineering qa
+      - "'## Engineering Handoff' is filled with validation evidence, open risks, and QA focus areas"
+      - story moves to engineering qa with file location, metadata status, and transition history synchronized
     forbidden_actions:
       - cycle commit
       - direct active-to-done transition
@@ -71,9 +71,10 @@ stages:
       - create the cycle commit
     exit_gate:
       - verdict is explicit
+      - "'## QA Verdict' is filled before any move to done"
       - missing evidence is treated as a blocking QA issue
       - bugs are filed when needed
-      - story moves to done or back to active
+      - story moves to done or back to active with file location, metadata status, and transition history synchronized
     forbidden_actions:
       - reprioritization during QA
       - silent validation failure

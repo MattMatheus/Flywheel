@@ -7,7 +7,7 @@ import argparse
 import json
 from pathlib import Path
 
-from flywheel_config import load_config, repo_root
+from flywheel_config import get, git_current_branch, git_is_repo, load_config, repo_root
 from flywheel_hooks import payload as hook_payload
 from flywheel_plugins import payload as plugin_payload
 from stage_context import load_stage_contracts
@@ -16,6 +16,8 @@ from validate_workflow_state import validate
 REQUIRED_FILES = (
     "fw",
     "flywheel.yaml",
+    "AGENTS.md",
+    "CLAUDE.md",
     "flywheel/README.md",
     "flywheel/AGENTS.md",
     "flywheel/HUMANS.md",
@@ -64,9 +66,28 @@ def main() -> int:
             failures.append(f"missing required file: {required}")
 
     try:
-        load_config(root)
+        config = load_config(root)
     except Exception as exc:
+        config = None
         failures.append(f"config load failed: {exc}")
+
+    if config is not None and git_is_repo(root):
+        try:
+            required_branch = get(config, "workflow.required_branch")
+            current_branch = git_current_branch(root)
+            if current_branch != required_branch:
+                failures.append(
+                    f"branch mismatch: workflow.required_branch is '{required_branch}' "
+                    f"but active branch is '{current_branch}'"
+                )
+        except Exception as exc:
+            failures.append(f"branch check failed: {exc}")
+
+    agents_entry = root / "AGENTS.md"
+    claude_entry = root / "CLAUDE.md"
+    if agents_entry.is_file() and claude_entry.is_file():
+        if claude_entry.read_text(encoding="utf-8") != agents_entry.read_text(encoding="utf-8"):
+            failures.append("CLAUDE.md has drifted from AGENTS.md; it must track AGENTS.md (symlink preferred)")
 
     try:
         contracts = load_stage_contracts(root)

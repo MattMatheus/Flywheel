@@ -8,69 +8,38 @@ Flywheel runs a staged workflow with explicit queue movement and cycle closure.
 3. PM maintains clear, ordered active queues.
 4. Engineering executes the top active implementation story.
 5. QA validates the story and decides `done` or return to `active`.
-6. Local workflow state is validated when queue state changed.
-7. Observer records the completed cycle as markdown plus structured JSON trace.
-8. A single cycle commit closes the work.
+6. Cycle closure validates workflow state, writes the observer record
+   (markdown plus JSON trace), and creates the single cycle commit
+   (`./fw close-cycle`).
 
-## Stages
-
-### Planning
-- Capture goals, constraints, and risks.
-- Make assumptions explicit.
-- Create intake artifacts.
-- Recommend the next stage.
-- Do not implement production changes.
-
-### Architect
-- Execute architecture decision stories.
-- Produce decision artifacts with alternatives, tradeoffs, and operational impact.
-- Produce follow-on implementation paths.
-- Do not replace implementation work with architecture work.
-
-### Engineering
-- Execute the top active engineering story.
-- Update tests and prepare handoff.
-- Record validation evidence, open risks, and QA focus areas.
-- Move work to QA.
-- Do not create the cycle commit yet.
-
-### QA
-- Validate acceptance criteria and regression risk.
-- Treat missing validation evidence as a blocking quality issue.
-- File defects when required.
-- Move the story to `done` or back to `active`.
-- Run observer and close the cycle commit.
-
-### PM
-- Refine intake items.
-- Rank the active queue.
-- Keep work bounded, explicit, and testable.
-
-### Cycle
-- Alternate engineering and QA until the configured engineering active queue is empty.
+Per-stage checklists, exit gates, and forbidden actions are defined once in
+`flywheel/stage_contracts.yaml` and surfaced by `./fw launch <stage>`. Stage
+prompts in `flywheel/prompts/` add judgment guidance.
 
 ## Invariants
-- Required branch is set by `workflow.required_branch`.
-- Commit format is set by `workflow.cycle_commit_format`.
-- Workflow locations are resolved from `flywheel.yaml`.
-- Stage launch context is available in human-readable text and machine-readable JSON.
-- Stage launch behavior is sourced from `flywheel/stage_contracts.yaml`.
-- Optional plugin location is set by `plugins.path`, defaulting to `flywheel/plugins`.
-- Plugin manifests should pass `flywheel/tools/flywheel_plugins.sh doctor` before plugin-provided behavior is used.
-- Optional hook location is set by `hooks.path`, defaulting to `flywheel/hooks`.
-- Hook configuration should pass `flywheel/tools/flywheel_hooks.sh doctor` before hook-enforced behavior is used.
-- Backlog movement should use the local state tool when practical so lane placement, frontmatter status, metadata status, transition history, and lane README queues are updated together.
-- Backlog state should pass `flywheel/tools/validate_workflow_state.sh` before cycle closure.
-- Observer is part of cycle closure, not optional cleanup.
+- Required branch and commit format come from `workflow.*` in `flywheel.yaml`;
+  see `flywheel/process/BRANCH_AND_COMMIT_INVARIANTS.md`.
+- All workflow locations are resolved from `flywheel.yaml`.
+- Backlog movement uses `./fw move` so lane placement, metadata status,
+  transition history, and lane README queues update together; configured
+  `post_state_move` hooks run automatically.
+- Backlog state must pass `./fw validate` before cycle closure.
+- Observer is part of cycle closure, not optional cleanup; the JSON trace is
+  the machine-readable artifact, the markdown report the human projection.
 - Artifact readiness must be explicit before promotion.
-- Optional artifact-tool usage may be surfaced by config, but Flywheel core does not require that integration.
-- When the optional artifact workflow integration is enabled, agents should consult `flywheel/tools/artifact_workflow.sh <stage> --format json` for machine-readable stage entry and exit artifact guidance.
-- Risky or sensitive actions require explicit approval and recorded outcome.
-- Approval-governed work should use `flywheel/tools/flywheel_approval.sh record ...`.
-- Workflow changes require synchronized updates across docs, prompts, and tools.
+- Risky or sensitive actions require explicit approval and a recorded outcome
+  (`./fw approval record ...`).
+- Plugins and hooks are optional, validated extensions
+  (`./fw plugins doctor`, `./fw hooks doctor`).
+- The artifact workflow integration is optional; when enabled in config, its
+  guidance appears in the `./fw launch` payload.
 
 ## Empty Queue Rule
-If the configured engineering active lane is empty, the harness should report `no stories` and route work toward planning or PM refinement instead of inventing execution work.
+If the configured engineering active lane is empty, report `no stories` and
+route work toward planning or PM refinement instead of inventing execution
+work.
 
 ## Examples
-Lifecycle examples may live under `flywheel/examples/`. They are not active backlog state and should not be moved through lanes unless copied into intake as real work.
+Lifecycle examples live under `flywheel/examples/`. They are not active backlog
+state and should not be moved through lanes unless copied into intake as real
+work.

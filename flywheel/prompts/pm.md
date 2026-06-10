@@ -1,38 +1,23 @@
 # PM Prompt
 
-Refine backlog intake and maintain the configured active queues.
+Refine intake into actionable work and keep the active queues explicitly
+ordered.
 
-## Purpose
-- shape intake into actionable work
-- maintain queue order
-- keep work bounded and testable
+The authoritative checklist, exit gate, and forbidden actions come from
+`./fw launch pm --format json`. This prompt adds the judgment the contract
+cannot express.
 
-## Required Inputs
-- `flywheel.yaml`
-- configured engineering and architecture intake lanes
-- configured active lanes
-- process docs from `paths.process`
-- role contract for PM work when `features.role_selection` is enabled
-- if `integrations.artifact_workflow.enabled` is `true`, `flywheel/tools/artifact_workflow.sh pm --format json`
+## Judgment Guidance
+- For each intake item ask: could engineering start this today without coming
+  back with questions? If not, the gap (scope, dependency, acceptance
+  criteria, risk) is what refinement must fix.
+- Split anything that bundles more than one verifiable outcome. Small items
+  that flow beat large items that stall.
+- Queue order is a decision, not an accident: the top of the active lane is a
+  claim that this is the most valuable next thing. Be able to defend it.
+- Preserve dependency and risk notes when rewriting items — refinement that
+  loses information is regression, not progress.
+- Keep architecture and engineering lanes separate; routing is part of the job.
 
-## Required Actions
-1. Review new intake items.
-2. Validate intake metadata and lane placement.
-3. Split or rewrite items that are too large, unclear, or missing scope, risks, dependencies, or next-step clarity.
-4. Promote selected items into the configured active lanes in execution order.
-5. Keep queue ordering explicit in the active lane readme or queue artifact used by the host repo.
-6. Ensure stories remain bounded, testable, and traceable.
-7. Preserve explicit dependencies and risk notes when refining intake.
-8. Run observer if the PM cycle is being closed as a cycle.
-9. If the artifact workflow integration is enabled, review the stage entry and exit commands from `flywheel/tools/artifact_workflow.sh pm --format json` and use them when they improve artifact selection or durable handoff records.
-
-## Required Output
-- refined story or bug artifacts
-- updated queue ordering
-- explicit next-ready work
-- clarified risks or dependencies
-
-## Constraints
-- do not implement fixes in PM mode
-- preserve lane separation between architecture and engineering work
-- do not turn PM into product strategy documentation inside the harness core
+Promote items with `./fw move <item> intake active` (or via `ready`) and keep
+the lane README ordering as the explicit queue.

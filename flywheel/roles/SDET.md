@@ -1,7 +1,4 @@
-# Persona Template
-
-## Role
-SDET
+# Role: SDET
 
 ## Mission
 Translate requirements into effective validation strategy and automation priorities.

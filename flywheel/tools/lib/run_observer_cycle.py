@@ -92,6 +92,7 @@ def trace_payload(root: Path, config: dict[str, Any], cycle_id: str, story_path:
 
 
 def write_markdown(report_path: Path, trace: dict[str, Any]) -> None:
+    # The JSON trace is the canonical record; the markdown report stays slim.
     diff_rows = trace["diff_inventory"] or ["no tracked or untracked file deltas detected"]
     lines = [
         f"# Observer Report: {trace['cycle_id']}",
@@ -101,62 +102,34 @@ def write_markdown(report_path: Path, trace: dict[str, Any]) -> None:
         f"- `generated_at_utc`: {trace['generated_at_utc']}",
         f"- `branch`: {trace['branch']}",
         f"- `story_path`: {trace['story_path']}",
-        f"- `actor`: {trace['actor']}",
-        "",
-        "## Structured Trace",
         f"- `trace_path`: {report_path.with_suffix('.json').name}",
-        "",
-        "## Stage Trace",
-        "- `events`: []",
-        "",
-        "## Diff Inventory",
-    ]
-    lines.extend(f"- {row}" for row in diff_rows)
-    lines.extend([
         "",
         "## Objective",
         "- `intended_outcome`: ",
         "- `scope_boundary`: ",
         "",
-        "## Inputs And Evidence",
-        "- `artifacts_reviewed`: []",
-        "- `tools_used`: []",
-        "- `external_sources`: []",
-        "",
         "## Changes Made",
-        "- `files_changed`: []",
+    ]
+    lines.extend(f"- {row}" for row in diff_rows)
+    lines.extend([
         "- `state_transitions`: []",
-        "- `non_file_actions`: []",
         "",
         "## Validation",
         "- `checks_run`: []",
         "- `results`: []",
         "- `checks_not_run`: []",
         "",
-        "## Workflow Sync Checks",
-        "- [ ] Entry docs updated if workflow behavior changed.",
-        "- [ ] Prompts updated if stage behavior changed.",
-        "- [ ] Process docs updated if contracts or gates changed.",
-        "- [ ] Queue order and state remain synchronized.",
-        "",
         "## Warnings And Risks",
         "- `unresolved_risks`: []",
         "- `assumptions_carried`: []",
-        "- `warnings`: []",
         "",
         "## Action Record",
         "- `highest_action_class`: ",
-        "- `approval_required`: ",
         "- `approval_reference`: ",
         "",
         "## Next Step",
         "- `recommended_next_state`: ",
         "- `follow_up_work`: []",
-        "- `durable_promotions`: []",
-        "",
-        "## Release Impact",
-        "- Release scope: ",
-        "- Additional release actions: []",
         "",
     ])
     report_path.write_text("\n".join(lines), encoding="utf-8")

@@ -2,7 +2,16 @@
 
 Flywheel should remain the canonical workflow source while supporting projections into coding-agent tool formats.
 
-The first export implementation is read-only. It plans exports but does not write files.
+The agent-context projections are maintained in-repo rather than generated:
+
+- The root `AGENTS.md` is the canonical, model-agnostic agent entry point
+  (the format Codex and other AGENTS.md-aware tools read directly).
+- `CLAUDE.md` is a symlink to `AGENTS.md`, so Claude reads the identical
+  contract. `./fw doctor` fails if the two ever diverge.
+- `.claude/commands/` holds thin per-stage slash commands that delegate to
+  `./fw launch <stage> --format json`.
+
+The export planner remains read-only for the other targets. It plans exports but does not write files.
 
 ## Why Use It?
 

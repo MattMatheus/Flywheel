@@ -9,7 +9,7 @@ This is documentation-only. Do not place this file in a live backlog lane.
 kind: story
 id: STORY-20260524-example
 status: intake
-owner_role: Software Architect.md
+owner_role: engineering
 source: planning
 success_metric: one clear behavior is validated
 release_scope: n/a
@@ -20,7 +20,7 @@ ready: false
 
 ## Metadata
 - `id`: STORY-20260524-example
-- `owner_role`: Software Architect.md
+- `owner_role`: engineering
 - `status`: intake
 - `source`: planning
 - `decision_refs`: []

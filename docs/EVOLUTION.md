@@ -46,6 +46,8 @@ Implemented:
 - `flywheel_hooks.sh doctor`
 - `flywheel_hooks.sh run`
 - `pre_state_move` and `post_state_move` integration in `flywheel_state.sh move`
+- `pre_cycle_close`, `post_observer`, and `pre_commit` integration in `close_cycle.sh`
+- default `post_state_move` validation hook wired in `flywheel.yaml`
 
 ### Observer Experience Index
 
@@ -79,7 +81,9 @@ Implemented:
 - `flywheel_export.sh plan claude`
 - `flywheel_export.sh plan all`
 - JSON and text export planning
-- no file writes in first implementation
+- root `AGENTS.md` maintained in-repo as the canonical agent entry point
+- `CLAUDE.md` symlink tracking `AGENTS.md` (sync enforced by doctor)
+- `.claude/commands/` per-stage slash commands delegating to `./fw launch`
 
 ### Lane Query API And TUI
 
@@ -100,3 +104,4 @@ Implemented:
 - configured domain and lane reporting
 - item metadata/frontmatter summaries
 - README queue order support with filename fallback
+- `flywheel_status.sh` one-screen status (branch, state, lanes, next stories)

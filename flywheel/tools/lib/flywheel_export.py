@@ -14,6 +14,7 @@ from flywheel_config import rel, repo_root
 TARGETS = ("cursor", "codex", "claude")
 
 CANONICAL_SOURCES = (
+    "AGENTS.md",
     "flywheel/AGENTS.md",
     "flywheel/HUMANS.md",
     "flywheel/DEVELOPMENT_CYCLE.md",
@@ -49,8 +50,8 @@ TARGET_PLANS: dict[str, list[dict[str, Any]]] = {
         {
             "kind": "agent_context",
             "target_path": "AGENTS.md",
-            "sources": ["flywheel/AGENTS.md", "docs/README.md"],
-            "description": "Codex-compatible agent context projection.",
+            "sources": ["AGENTS.md"],
+            "description": "Maintained in-repo: root AGENTS.md is the canonical model-agnostic agent entry point.",
         },
         {
             "kind": "skill",
@@ -63,8 +64,14 @@ TARGET_PLANS: dict[str, list[dict[str, Any]]] = {
         {
             "kind": "agent_context",
             "target_path": "CLAUDE.md",
-            "sources": ["flywheel/AGENTS.md", "flywheel/HUMANS.md", "docs/OPERATIONS.md"],
-            "description": "Claude-compatible project context projection.",
+            "sources": ["AGENTS.md"],
+            "description": "Maintained in-repo: CLAUDE.md is a symlink tracking the canonical root AGENTS.md.",
+        },
+        {
+            "kind": "commands",
+            "target_path": ".claude/commands/",
+            "sources": ["flywheel/stage_contracts.yaml"],
+            "description": "Maintained in-repo: thin per-stage slash commands that delegate to ./fw launch.",
         },
         {
             "kind": "hook_settings",

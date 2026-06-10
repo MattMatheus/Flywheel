@@ -7,7 +7,9 @@ Hooks are different from skills:
 - Skills guide agent behavior.
 - Hooks enforce local invariants.
 
-No hooks are enabled by default.
+One hook ships enabled by default: `post_state_move` runs
+`flywheel/hooks/examples/validate_after_state_move.sh`, so every lane move is
+followed by workflow state validation.
 
 ## Why Add A Hook?
 
@@ -32,6 +34,7 @@ Today, Flywheel can:
 - run configured hook commands for supported events
 - pass event context through environment variables
 - run `pre_state_move` and `post_state_move` around `flywheel_state.sh move`
+- run `pre_cycle_close`, `post_observer`, and `pre_commit` inside `close_cycle.sh`
 
 Hooks are local shell commands. A required hook that exits non-zero fails the event.
 
@@ -82,7 +85,7 @@ Supported events:
 - `post_observer`
 - `pre_commit`
 
-`flywheel_state.sh move` runs `pre_state_move` before changing files and `post_state_move` after the transition is complete.
+`flywheel_state.sh move` runs `pre_state_move` before changing files and `post_state_move` after the transition is complete. `close_cycle.sh` runs `pre_cycle_close` before validation, `post_observer` after the observer record is written, and `pre_commit` before the cycle commit.
 
 ## Example Included In This Repo
 
@@ -92,7 +95,8 @@ Flywheel includes an example hook script at:
 flywheel/hooks/examples/validate_after_state_move.sh
 ```
 
-It runs workflow-state validation after a state move. It is not enabled by default; copy the quick-start config above when you want to try it.
+It runs workflow-state validation after a state move and is wired into
+`hooks.events.post_state_move` by default.
 
 ## Configuration
 

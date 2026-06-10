@@ -83,10 +83,13 @@ This keeps the harness system contained in `flywheel/` while allowing backlog st
 
 Use `./fw` as the human-facing command router:
 
+- `./fw status`
 - `./fw doctor`
 - `./fw lanes`
 - `./fw launch engineering`
 - `./fw move <item> <from-lane> <to-lane> --reason "<reason>"`
+- `./fw close-cycle --cycle-id <cycle-id>`
+- `./fw demo`
 - `./fw plugins doctor`
 - `./fw hooks doctor`
 - `./fw experience summarize`
@@ -137,7 +140,7 @@ Plugins live under `plugins.path`, defaulting to `flywheel/plugins`. They should
 - `./flywheel/tools/flywheel_hooks.sh doctor --format json`
 - `./flywheel/tools/flywheel_hooks.sh run pre_state_move --context '{"item":"STORY-example"}'`
 
-Hooks live under `hooks.path`, defaulting to `flywheel/hooks`. They provide deterministic enforcement slots around workflow commands. No hooks are enabled by default.
+Hooks live under `hooks.path`, defaulting to `flywheel/hooks`. They provide deterministic enforcement slots around workflow commands. By default a `post_state_move` hook validates workflow state after every lane move.
 
 ### Move Local Workflow State
 - `./flywheel/tools/flywheel_state.sh move <item> <from-lane> <to-lane>`
@@ -153,9 +156,9 @@ The state tool moves an item between configured lanes, updates its metadata stat
 Approval records are written under the configured observer artifact directory in `approvals/`. Use these records when work crosses from local write into risky, sensitive, or production-impacting action classes.
 
 ### Close A Cycle
-- `./flywheel/tools/run_observer_cycle.sh --cycle-id <cycle-id>`
+- `./fw close-cycle --cycle-id <cycle-id> --story <path>`
 
-Observer closure writes both a markdown report and a structured JSON trace sidecar next to it. The markdown remains the human-readable record; the JSON sidecar is the agent-readable execution trace scaffold.
+Cycle closure runs workflow validation, writes the observer markdown report plus structured JSON trace, refreshes the experience index, and creates the single cycle commit. The markdown remains the human-readable record; the JSON sidecar is the agent-readable execution trace. `./flywheel/tools/run_observer_cycle.sh` remains available for writing an observer record alone.
 
 ### Index Observer Experience
 - `./flywheel/tools/flywheel_experience.sh index`
@@ -171,7 +174,7 @@ Experience indexing reads observer JSON traces and writes derived `index.jsonl`,
 - `./flywheel/tools/flywheel_export.sh plan claude`
 - `./flywheel/tools/flywheel_export.sh plan all --format json`
 
-Export planning shows how Flywheel context would project into tool-specific files without writing them.
+Export planning shows how Flywheel context projects into tool-specific files. The agent-context projections are maintained in-repo: the root `AGENTS.md` is the canonical model-agnostic entry point and `CLAUDE.md` is a symlink tracking it, so every tool reads the same contract.
 
 ### Optional Artifact Workflow
 Flywheel can surface artifact-tool commands without making that tool part of the harness contract.

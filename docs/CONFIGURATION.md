@@ -14,7 +14,7 @@ Controls branch and commit expectations.
 
 ```yaml
 workflow:
-  required_branch: dev
+  required_branch: main
   cycle_commit_format: "cycle-{cycle_id}"
 ```
 
@@ -71,11 +71,17 @@ hooks:
   path: "flywheel/hooks"
   events:
     pre_state_move: []
-    post_state_move: []
+    post_state_move:
+      - name: validate-workflow-state
+        command: "flywheel/hooks/examples/validate_after_state_move.sh"
+        required: true
     pre_cycle_close: []
     post_observer: []
     pre_commit: []
 ```
+
+The `post_state_move` validation hook ships enabled so every lane move is
+followed by workflow state validation.
 
 Hook entries may be command strings:
 

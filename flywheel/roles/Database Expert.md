@@ -1,7 +1,4 @@
-# Persona Template
-
-## Role
-Database Expert
+# Role: Database Expert
 
 ## Mission
 Evaluate data model, schema, storage, and retrieval implications when work touches persistent state.

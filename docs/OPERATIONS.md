@@ -4,11 +4,13 @@ This guide describes how to operate Flywheel in a local repository.
 
 ## Before Work Starts
 
-1. Read `flywheel.yaml`.
-2. Confirm the current branch matches `workflow.required_branch`.
-3. Run `./fw doctor`.
-4. Select the stage.
-5. Launch the stage with `./fw launch <stage>`.
+1. Run `./fw status` — it reports the branch against `workflow.required_branch`, workflow state, lane counts, and the next active story.
+2. Run `./fw doctor` when checking overall harness health.
+3. Select the stage.
+4. Launch the stage with `./fw launch <stage>`.
+
+On a fresh harness with an empty backlog, `./fw demo` seeds a sample story so
+the full lifecycle can be exercised end to end.
 
 Use JSON output when another tool or agent will consume the result:
 
@@ -23,13 +25,16 @@ Use configured paths only. Do not assume default backlog or artifact directories
 When moving work between lanes, prefer:
 
 ```bash
-./flywheel/tools/flywheel_state.sh move <item> <from-lane> <to-lane> --reason "<reason>"
+./fw move <item> <from-lane> <to-lane> --reason "<reason>"
 ```
 
-Run validation after queue or metadata changes:
+The move tool keeps the item file, frontmatter status, transition history,
+lane README queues, and the root backlog summary synchronized, and the default
+`post_state_move` hook validates workflow state after every move. Run
+validation manually after other metadata changes:
 
 ```bash
-./flywheel/tools/validate_workflow_state.sh
+./fw validate
 ```
 
 Inspect lane state without changing it:
@@ -40,26 +45,18 @@ Inspect lane state without changing it:
 
 ## Cycle Closure
 
-At the end of a completed cycle:
-
-1. Ensure QA verdict and validation evidence are recorded.
-2. Validate workflow state.
-3. Write observer artifacts.
-4. Commit once using `workflow.cycle_commit_format`.
-
-Observer command:
+Ensure the QA verdict and validation evidence are recorded on the story, then
+close the cycle in one step:
 
 ```bash
-./flywheel/tools/run_observer_cycle.sh --cycle-id <cycle-id>
+./fw close-cycle --cycle-id <cycle-id> --story <path>
 ```
 
-Refresh derived experience artifacts when observer traces change:
-
-```bash
-./flywheel/tools/flywheel_experience.sh index
-```
-
-Experience artifacts are derived from observer JSON traces. They can be regenerated from the current observer artifact directory.
+This validates workflow state, writes the observer report and JSON trace,
+refreshes the derived experience artifacts, and creates the single cycle
+commit using `workflow.cycle_commit_format`. The individual tools
+(`run_observer_cycle.sh`, `flywheel_experience.sh index`) remain available
+when a step needs to run alone.
 
 ## Approvals
 
@@ -93,14 +90,21 @@ Plugins are also optional. Validate them before use:
 ./flywheel/tools/flywheel_plugins.sh doctor
 ```
 
-Hooks are optional deterministic enforcement points. Validate them after changes:
+Hooks are deterministic enforcement points. A default `post_state_move` hook
+validates workflow state after every lane move. Validate hook config after
+changes:
 
 ```bash
 ./flywheel/tools/flywheel_hooks.sh doctor
 ```
 
-Plan tool-specific context exports without writing files:
+Plan tool-specific context exports:
 
 ```bash
 ./fw export plan all
 ```
+
+The agent-context projections are maintained in-repo: the root `AGENTS.md` is
+the canonical model-agnostic agent entry point, `CLAUDE.md` is a symlink that
+tracks it (enforced by `./fw doctor`), and `.claude/commands/` holds thin
+per-stage slash commands that delegate to `./fw launch`.

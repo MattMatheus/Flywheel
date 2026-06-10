@@ -10,7 +10,7 @@ import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
-from flywheel_config import DOMAINS, LANES, load_config, path, rel, repo_root
+from flywheel_config import DOMAINS, LANES, get, git_current_branch, load_config, path, rel, repo_root
 from flywheel_hooks import run_event
 
 STATUS_RE = re.compile(r"^(\s*-\s*`status`:\s*)(.*)$", re.MULTILINE)
@@ -29,6 +29,15 @@ QUEUE_SECTIONS = {
     "blocked": "## Blocked Sequence",
     "archive": "## Archived",
 }
+
+# Sections of flywheel/backlog/README.md validated by validate_workflow_state.
+ROOT_BACKLOG_SECTIONS = {
+    "active": ("## Now", "No active engineering or architecture work."),
+    "ready": ("## Next", "No ready engineering or architecture work."),
+    "intake": ("## Later", "No candidate engineering or architecture intake items."),
+}
+
+ROOT_BACKLOG_ITEM_RE = re.compile(r"^\s*-\s*`(?P<path>[^`]+\.md)`\s*$")
 
 EMPTY_MESSAGES = {
     "intake": "No candidate {domain} items.",
@@ -231,6 +240,59 @@ def update_lane_readme(root: Path, config: dict, domain: str, lane: str, item_na
     return None
 
 
+def update_root_backlog_section(lines: list[str], heading: str, empty_message: str, item_ref: str | None, item_name: str) -> None:
+    section = find_section(lines, heading)
+    if not section:
+        return
+    start, end = section
+
+    for index in range(end - 1, start, -1):
+        match = ROOT_BACKLOG_ITEM_RE.match(lines[index])
+        if match and Path(match.group("path")).name == item_name:
+            del lines[index]
+            end -= 1
+
+    if item_ref is not None:
+        for index in range(end - 1, start, -1):
+            if lines[index].strip() == empty_message:
+                del lines[index]
+                end -= 1
+        insert_at = end
+        while insert_at > start + 1 and lines[insert_at - 1].strip() == "":
+            insert_at -= 1
+        lines.insert(insert_at, f"- `{item_ref}`")
+    else:
+        has_items = any(ROOT_BACKLOG_ITEM_RE.match(lines[index]) for index in range(start + 1, end))
+        has_message = any(lines[index].strip() == empty_message for index in range(start + 1, end))
+        if not has_items and not has_message:
+            insert_at = end
+            while insert_at > start + 1 and lines[insert_at - 1].strip() == "":
+                insert_at -= 1
+            lines.insert(insert_at, empty_message)
+
+
+def sync_root_backlog(root: Path, config: dict, from_lane: str, to_lane: str, item_name: str, target_ref: str) -> str | None:
+    readme = root / "flywheel" / "backlog" / "README.md"
+    if not readme.is_file():
+        return None
+
+    original = readme.read_text(encoding="utf-8")
+    lines = original.splitlines()
+
+    if from_lane in ROOT_BACKLOG_SECTIONS:
+        heading, empty_message = ROOT_BACKLOG_SECTIONS[from_lane]
+        update_root_backlog_section(lines, heading, empty_message, None, item_name)
+    if to_lane in ROOT_BACKLOG_SECTIONS:
+        heading, empty_message = ROOT_BACKLOG_SECTIONS[to_lane]
+        update_root_backlog_section(lines, heading, empty_message, target_ref, item_name)
+
+    updated = "\n".join(lines).rstrip() + "\n"
+    if updated != original:
+        readme.write_text(updated, encoding="utf-8")
+        return rel(root, readme)
+    return None
+
+
 def sync_lane_readmes(root: Path, config: dict, domain: str, from_lane: str, to_lane: str, item_name: str) -> list[str]:
     updated = []
     from_readme = update_lane_readme(root, config, domain, from_lane, item_name, add=False)
@@ -246,6 +308,11 @@ def move_item(args: argparse.Namespace) -> dict:
     root = repo_root(Path(__file__))
     config = load_config(root)
     domain = infer_domain(args.item, args.domain)
+
+    required_branch = get(config, "workflow.required_branch")
+    current_branch = git_current_branch(root)
+    if current_branch != required_branch:
+        raise RuntimeError(f"state moves require branch '{required_branch}'; active branch is '{current_branch}'")
 
     if args.from_lane not in LANES or args.to_lane not in LANES:
         raise RuntimeError(f"lanes must be one of: {', '.join(LANES)}")
@@ -281,6 +348,9 @@ def move_item(args: argparse.Namespace) -> dict:
     shutil.move(str(temp), str(target))
     source.unlink()
     synced_readmes = sync_lane_readmes(root, config, domain, args.from_lane, args.to_lane, source.name)
+    root_backlog = sync_root_backlog(root, config, args.from_lane, args.to_lane, source.name, rel(root, target))
+    if root_backlog:
+        synced_readmes.append(root_backlog)
 
     payload = {
         "state_transition": {

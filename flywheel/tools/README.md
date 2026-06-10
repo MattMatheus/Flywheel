@@ -7,9 +7,11 @@ These commands are the stable local interface for humans and agents. Shell scrip
 Use `./fw` from the repo root for common human workflows:
 
 ```bash
+./fw status
 ./fw doctor
 ./fw lanes
 ./fw launch engineering
+./fw close-cycle --cycle-id <cycle-id>
 ./fw plugins doctor
 ./fw export plan all
 ```
@@ -18,7 +20,10 @@ Use `./fw` from the repo root for common human workflows:
 
 ## Command Index
 
+- `flywheel_status.sh`: one-screen branch, state, lane, and next-story status.
 - `launch_stage.sh`: emit stage launch context.
+- `close_cycle.sh`: validate, run observer, index experience, and create the cycle commit.
+- `seed_demo_story.sh`: seed a sample story into engineering intake for a lifecycle walkthrough.
 - `validate_workflow_state.sh`: validate backlog and lane consistency.
 - `flywheel_lanes.sh`: inspect configured lanes.
 - `flywheel_state.sh`: move items between lanes.
@@ -29,6 +34,30 @@ Use `./fw` from the repo root for common human workflows:
 - `flywheel_doctor.sh`: run whole-harness health checks.
 - `flywheel_plugins.sh`: list and validate plugins.
 - `flywheel_hooks.sh`: list, validate, and run hooks.
+
+## Workflow Status
+
+```bash
+./flywheel/tools/flywheel_status.sh
+./flywheel/tools/flywheel_status.sh --format json
+```
+
+Shows the current branch against `workflow.required_branch`, workflow state
+validation, per-domain lane counts, and the top active story per domain. Exits
+non-zero when the branch mismatches or validation fails.
+
+## Cycle Closure
+
+```bash
+./flywheel/tools/close_cycle.sh --cycle-id <cycle-id> --story <path>
+./flywheel/tools/close_cycle.sh --cycle-id <cycle-id> --no-commit --format json
+```
+
+Runs the full closure sequence in one step: `pre_cycle_close` hooks, workflow
+state validation, observer report plus JSON trace, `post_observer` hooks,
+experience index refresh, and the single cycle commit using
+`workflow.cycle_commit_format` (`pre_commit` hooks run first). Use
+`--no-commit` to run the checks and observer without committing.
 
 ## Stage Launch
 
@@ -136,7 +165,7 @@ Use this to list optional Flywheel plugins and validate their manifests. Plugins
 ./flywheel/tools/flywheel_hooks.sh run pre_state_move --context '{"item":"STORY-example"}'
 ```
 
-Use this to list, validate, and run optional deterministic hooks. Hooks live under the configured `hooks.path` directory and are configured under `hooks.events` in `flywheel.yaml`. State moves run `pre_state_move` and `post_state_move` hooks when configured.
+Use this to list, validate, and run optional deterministic hooks. Hooks live under the configured `hooks.path` directory and are configured under `hooks.events` in `flywheel.yaml`. State moves run `pre_state_move` and `post_state_move` hooks when configured; cycle closure runs `pre_cycle_close`, `post_observer`, and `pre_commit` hooks. A default `post_state_move` hook validates workflow state after every move.
 
 ## Artifact Workflow Integration
 

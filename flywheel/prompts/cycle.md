@@ -1,32 +1,20 @@
 # Cycle Prompt
 
-Drain the configured engineering active queue by alternating engineering and QA stages.
+Drain the engineering active queue by alternating the engineering and QA
+stages, one story and one commit per cycle.
 
-## Purpose
-- execute the standard implementation loop until the active engineering queue is empty
+The authoritative loop, exit gate, and forbidden actions come from
+`./fw launch cycle --format json`. This prompt adds the judgment the contract
+cannot express.
 
-## Required Inputs
-- `flywheel.yaml`
-- configured engineering active, QA, and done lanes
-- engineering and QA prompts
-- if `integrations.artifact_workflow.enabled` is `true`, `flywheel/tools/artifact_workflow.sh cycle --format json`
-
-## Required Actions
-1. Run the engineering stage.
-2. If the result is `no stories`, stop.
-3. Run the QA stage for the story moved into the QA lane.
-4. Run `flywheel/tools/validate_workflow_state.sh` after queue movement.
-5. Run observer for the completed cycle; use the markdown report for human review and the JSON sidecar for agent-readable trace evidence.
-6. Create the cycle commit using `workflow.cycle_commit_format`.
-7. Repeat until the active engineering queue is empty.
-8. If the artifact workflow integration is enabled, review the stage entry and exit commands from `flywheel/tools/artifact_workflow.sh cycle --format json` and use them when they improve artifact selection or cycle-closure durability.
-
-## Required Output
-- completed cycle artifacts for each processed story
-- observer report for each closed cycle
-- one commit per completed cycle
-
-## Constraints
-- do not bypass backlog states
-- do not commit during intermediate transitions
-- stop when the queue is empty instead of inventing more work
+## Judgment Guidance
+- Each iteration is a full engineering stage then a full QA stage on the same
+  story. Do not batch several stories into one pass or one commit.
+- `./fw close-cycle --cycle-id <id> --story <path>` performs the closure
+  mechanics: state validation, observer record, experience index, and the
+  single cycle commit.
+- A story QA returns to `active` is the next iteration's work — fix it before
+  starting new stories.
+- Stop conditions are explicit: the active lane is empty (`no_stories`), or an
+  item is blocked in a way only the operator can resolve. Say which one ended
+  the loop. Never invent work to keep the loop alive.

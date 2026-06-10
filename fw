@@ -14,21 +14,26 @@ Usage:
 Human-facing commands:
   help                 Show this help.
   commands             Show command mapping.
+  status               Show branch, workflow state, lanes, and next stories.
   doctor               Run whole-harness health checks.
   validate             Validate workflow state.
   lanes                Show configured lanes.
   launch <stage>       Launch a stage.
   move <args...>       Move a workflow item between lanes.
+  close-cycle <args..> Validate, run observer, index experience, commit.
   observer <args...>   Write observer report and JSON trace.
   experience <args...> Manage experience index.
   export <args...>     Plan tool-specific exports.
   plugins <args...>    List or validate plugins.
   hooks <args...>      List, validate, or run hooks.
   approval <args...>   Record approval-governed work.
+  demo                 Seed a sample story into engineering intake.
   doc-test             Run harness doc tests.
 
 Examples:
+  ./fw status
   ./fw doctor
+  ./fw close-cycle --cycle-id 20260610-example
   ./fw lanes
   ./fw launch engineering --format json
   ./fw move STORY-20260524-example active qa --reason "handoff ready"
@@ -40,6 +45,8 @@ EOF
 commands() {
   cat <<'EOF'
 Command mapping:
+  status      -> flywheel/tools/flywheel_status.sh
+  close-cycle -> flywheel/tools/close_cycle.sh
   doctor      -> flywheel/tools/flywheel_doctor.sh
   validate    -> flywheel/tools/validate_workflow_state.sh
   lanes       -> flywheel/tools/flywheel_lanes.sh
@@ -51,6 +58,7 @@ Command mapping:
   plugins     -> flywheel/tools/flywheel_plugins.sh
   hooks       -> flywheel/tools/flywheel_hooks.sh
   approval    -> flywheel/tools/flywheel_approval.sh
+  demo        -> flywheel/tools/seed_demo_story.sh
   doc-test    -> flywheel/tools/run_doc_tests.sh
 EOF
 }
@@ -69,6 +77,12 @@ case "$command" in
     ;;
   commands)
     commands
+    ;;
+  status)
+    exec "$tools_dir/flywheel_status.sh" "$@"
+    ;;
+  close-cycle)
+    exec "$tools_dir/close_cycle.sh" "$@"
     ;;
   doctor)
     exec "$tools_dir/flywheel_doctor.sh" "$@"
@@ -102,6 +116,9 @@ case "$command" in
     ;;
   approval)
     exec "$tools_dir/flywheel_approval.sh" "$@"
+    ;;
+  demo)
+    exec "$tools_dir/seed_demo_story.sh" "$@"
     ;;
   doc-test)
     exec "$tools_dir/run_doc_tests.sh" "$@"

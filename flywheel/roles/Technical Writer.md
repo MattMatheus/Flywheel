@@ -1,7 +1,4 @@
-# Persona Template
-
-## Role
-Technical Writer
+# Role: Technical Writer
 
 ## Mission
 Keep workflow and system documentation accurate, clear, and current with actual behavior.
